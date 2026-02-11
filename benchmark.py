@@ -235,6 +235,7 @@ def main():
         print("\n" + "🦀 " * 30)
         print("🦀 " * 30 + "\n")
     logger.info("🦞🦀🦐 Starting PinchBench 🦐🦀🦞")
+    time.sleep(5)
 
     if not tasks_dir.exists():
         logger.error(f"❌ Tasks directory not found: {tasks_dir}")
