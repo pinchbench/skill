@@ -97,14 +97,7 @@ def prepare_task_workspace(skill_dir: Path, run_id: str, task: Task) -> Path:
 
 
 def _resolve_session_id_from_store(agent_id: str) -> str | None:
-    sessions_store = (
-        Path.home()
-        / ".openclaw"
-        / "agents"
-        / agent_id
-        / "sessions"
-        / "sessions.json"
-    )
+    sessions_store = Path.home() / ".openclaw" / "agents" / agent_id / "sessions" / "sessions.json"
     if not sessions_store.exists():
         return None
     try:
@@ -147,15 +140,12 @@ def _load_transcript(agent_id: str, session_id: str) -> List[Dict[str, Any]]:
         session_ids.append(resolved_session_id)
 
     transcript_path = None
+    last_candidate_path = None
     for candidate in session_ids:
         candidate_path = (
-            Path.home()
-            / ".openclaw"
-            / "agents"
-            / agent_id
-            / "sessions"
-            / f"{candidate}.jsonl"
+            Path.home() / ".openclaw" / "agents" / agent_id / "sessions" / f"{candidate}.jsonl"
         )
+        last_candidate_path = candidate_path
         for attempt in range(3):
             if candidate_path.exists():
                 transcript_path = candidate_path
@@ -164,8 +154,11 @@ def _load_transcript(agent_id: str, session_id: str) -> List[Dict[str, Any]]:
                 time.sleep(0.5)
         if transcript_path is not None:
             break
-    if transcript_path is None or not transcript_path.exists():
-        logger.warning("Transcript missing at %s", candidate_path)
+    if transcript_path is None:
+        if last_candidate_path:
+            logger.warning("Transcript missing at %s", last_candidate_path)
+        else:
+            logger.warning("No session IDs to check for transcript")
         return []
 
     transcript: List[Dict[str, Any]] = []
@@ -202,7 +195,6 @@ def execute_openclaw_task(
     exit_code = -1
     timed_out = False
 
-    normalized_model = normalize_model_id(model_id)
     try:
         result = subprocess.run(
             [
@@ -210,8 +202,6 @@ def execute_openclaw_task(
                 "agent",
                 "--agent",
                 agent_id,
-                "--model",
-                normalized_model,
                 "--session-id",
                 session_id,
                 "--message",
