@@ -12,12 +12,19 @@ from the tasks/ directory.
 # ]
 # ///
 
+import argparse
+import json
 import logging
 import sys
 import time
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
+from lib_agent import (
+    ensure_agent_exists,
+    execute_openclaw_task,
+    slugify_model,
+)
 from lib_tasks import Task, TaskLoader
 
 
@@ -53,57 +60,9 @@ class OpenClawAgent:
         Returns:
             Dictionary containing execution results
         """
-        logger.info(f"🤖 Agent [{self.agent_id}] starting task: {task.task_id}")
-        logger.info(f"   Task: {task.name}")
-        logger.info(f"   Category: {task.category}")
-        
-        start_time = time.time()
-        
         if simulate:
-            # Simulate realistic agent behavior
-            logger.info(f"   📝 Reading task prompt...")
-            time.sleep(0.3)
-            
-            logger.info(f"   🧠 Planning approach...")
-            time.sleep(0.5)
-            
-            logger.info(f"   ⚙️  Executing task steps...")
-            time.sleep(0.8)
-            
-            logger.info(f"   ✅ Task execution complete")
-            
-            execution_time = time.time() - start_time
-            
-            result = {
-                'agent_id': self.agent_id,
-                'task_id': task.task_id,
-                'status': 'simulated',
-                'transcript': [
-                    {'step': 1, 'action': 'read_prompt', 'duration': 0.3},
-                    {'step': 2, 'action': 'plan_approach', 'duration': 0.5},
-                    {'step': 3, 'action': 'execute_steps', 'duration': 0.8},
-                ],
-                'workspace_path': f'/tmp/benchmark/{self.agent_id}/{task.task_id}',
-                'execution_time': execution_time,
-            }
-            
-            logger.info(f"   ⏱️  Execution time: {execution_time:.2f}s")
-            return result
-        
-        # TODO: Implement actual agent execution
-        # This is a placeholder for future implementation
-        
-        result = {
-            'agent_id': self.agent_id,
-            'task_id': task.task_id,
-            'status': 'not_implemented',
-            'transcript': [],
-            'workspace_path': None,
-            'execution_time': 0.0,
-        }
-        
-        logger.warning(f"Agent execution not yet implemented for task: {task.task_id}")
-        return result
+            logger.info("Simulate flag no longer supported for execute_task")
+        raise NotImplementedError("Use execute_openclaw_task helper for real runs")
 
 
 class BenchmarkRunner:
@@ -205,6 +164,45 @@ class BenchmarkRunner:
         print("\n" + "="*80)
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="PinchBench OpenClaw Benchmark Runner")
+    parser.add_argument(
+        "--model",
+        required=True,
+        help="Model identifier (e.g., anthropic/claude-sonnet-4)",
+    )
+    parser.add_argument(
+        "--suite",
+        default="all",
+        help='Tasks to run: "all", "automated-only", or comma-separated IDs',
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="results",
+        help="Results directory",
+    )
+    parser.add_argument(
+        "--no-upload",
+        action="store_true",
+        help="Skip uploading to server",
+    )
+    parser.add_argument(
+        "--timeout-multiplier",
+        type=float,
+        default=1.0,
+        help="Scale all task timeouts",
+    )
+    return parser.parse_args()
+
+
+def _select_task_ids(tasks: List[Task], suite: str) -> Optional[List[str]]:
+    if suite == "all":
+        return None
+    if suite == "automated-only":
+        return [task.task_id for task in tasks if task.grading_type == "automated"]
+    return [task_id.strip() for task_id in suite.split(",") if task_id.strip()]
+
+
 def main():
     """Main entry point for the benchmark script."""
     print("\n" + "🎪 "*20)
@@ -219,66 +217,68 @@ def main():
         logger.error(f"❌ Tasks directory not found: {tasks_dir}")
         sys.exit(1)
     
-    # Initialize benchmark runner
+    args = _parse_args()
+
     logger.info("🔧 Initializing BenchmarkRunner...")
     runner = BenchmarkRunner(tasks_dir)
-    
-    # Load all tasks
+
     logger.info("📂 Loading tasks from directory...")
     runner.load_tasks()
-    
-    # Print task summary
-    runner.print_task_summary()
-    
-    # Demonstrate agent creation and execution
-    print("\n" + "="*80)
-    logger.info("🤖 DEMONSTRATION: Creating and Running Agent")
-    print("="*80 + "\n")
-    
-    # Create an agent
-    agent = runner.create_agent(
-        agent_id="demo_agent_v1",
-        config={
-            'model': 'claude-3-opus',
-            'temperature': 0.7,
-            'max_tokens': 4096,
-        }
-    )
-    
-    logger.info(f"✅ Created agent: {agent.agent_id}")
-    logger.info(f"   Config: {agent.config}")
-    
-    # Run simulated benchmark on first 3 tasks
-    logger.info("\n🎬 Running simulated benchmark on first 3 tasks...")
-    time.sleep(0.5)
-    
-    # Get first 3 task IDs
-    task_ids_to_run = [task.task_id for task in runner.tasks[:3]]
-    
-    results = runner.run_benchmark(
-        agent,
-        task_ids=task_ids_to_run,
-        simulate=True
-    )
-    
-    # Show what a real run would look like
-    print("\n" + "="*80)
-    logger.info("💡 NEXT STEPS")
-    print("="*80)
-    logger.info("\nTo run a real benchmark (once agent execution is implemented):")
-    logger.info("  1. Implement the OpenClawAgent.execute_task() method")
-    logger.info("  2. Run: python benchmark.py")
-    logger.info("  3. Or run specific tasks: runner.run_benchmark(agent, task_ids=['task_01_calendar'])")
-    logger.info("\nThe system will:")
-    logger.info("  • Create isolated workspaces for each task")
-    logger.info("  • Execute the agent with the task prompt")
-    logger.info("  • Capture full transcripts and artifacts")
-    logger.info("  • Grade results against criteria")
-    logger.info("  • Generate comprehensive reports")
-    
-    print("\n" + "🎪 "*20)
-    logger.info("✨ PinchBench demonstration complete!")
-    print("🎪 "*20 + "\n")
+
+    model_slug = slugify_model(args.model)
+    run_id = str(int(time.time()))
+    skill_dir = script_dir
+    agent_id = f"bench-{model_slug}"
+    agent_workspace = Path(f"/tmp/pinchbench/{run_id}/workspace")
+
+    ensure_agent_exists(agent_id, args.model, agent_workspace)
+
+    task_ids = _select_task_ids(runner.tasks, args.suite)
+    results = []
+
+    tasks_to_run = runner.tasks
+    if task_ids is not None:
+        tasks_to_run = [task for task in runner.tasks if task.task_id in task_ids]
+
+    for i, task in enumerate(tasks_to_run, 1):
+        logger.info("\n%s", "=" * 80)
+        logger.info("📋 Task %s/%s", i, len(tasks_to_run))
+        logger.info("%s", "=" * 80)
+        result = execute_openclaw_task(
+            task=task,
+            agent_id=agent_id,
+            model_slug=model_slug,
+            run_id=run_id,
+            timeout_multiplier=args.timeout_multiplier,
+            skill_dir=skill_dir,
+        )
+        results.append(result)
+
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    aggregate = {
+        "model": args.model,
+        "run_id": run_id,
+        "timestamp": time.time(),
+        "tasks": [
+            {
+                "task_id": result["task_id"],
+                "status": result["status"],
+                "timed_out": result["timed_out"],
+                "execution_time": result["execution_time"],
+                "transcript_length": len(result["transcript"]),
+                "workspace": result["workspace"],
+            }
+            for result in results
+        ],
+    }
+
+    output_path = output_dir / f"{model_slug}_{run_id}.json"
+    output_path.write_text(json.dumps(aggregate, indent=2), encoding="utf-8")
+
+    logger.info("Saved results to %s", output_path)
+    if args.no_upload:
+        logger.info("Skipping upload (--no-upload)")
 
 
 if __name__ == "__main__":
