@@ -25,7 +25,7 @@ This will:
 
 1. Load all tasks from the `tasks/` directory
 2. Display a summary of loaded tasks
-3. Demonstrate agent scaffolding (execution not yet implemented)
+3. Run the configured agent across the selected tasks and emit results
 
 ## Script Features
 
@@ -38,12 +38,12 @@ The [`TaskLoader`](benchmark.py:89) class handles:
 - Extracting task sections (Prompt, Expected Behavior, Grading Criteria, etc.)
 - Creating structured [`Task`](benchmark.py:31) objects
 
-### Agent Scaffolding
+### Agent Runtime
 
 The [`OpenClawAgent`](benchmark.py:189) class provides:
 
 - Agent initialization with configuration
-- Task execution interface (to be implemented)
+- Task execution interface
 - Result tracking structure
 
 ### Benchmark Runner
@@ -122,24 +122,14 @@ The script uses Python's built-in logging with:
 
 Dependencies are automatically managed by `uv` using inline script metadata.
 
-## Next Steps
-
-The current implementation provides:
-- ✅ Task loading and parsing
-- ✅ Agent scaffolding
-- ✅ Logging infrastructure
-- ⏳ Agent execution (to be implemented)
-- ⏳ Grading system (to be implemented)
-- ⏳ Result reporting (to be implemented)
-
 ## Development
 
 To extend the system:
 
 1. **Add new tasks**: Create markdown files in `tasks/` following the template
-2. **Implement agent execution**: Complete the [`execute_task`](benchmark.py:199) method in [`OpenClawAgent`](benchmark.py:189)
-3. **Add grading**: Implement the grading system to evaluate agent performance
-4. **Create reports**: Build result aggregation and reporting functionality
+2. **Customize agent execution**: Adjust the [`execute_task`](benchmark.py:199) method in [`OpenClawAgent`](benchmark.py:189)
+3. **Tune grading**: Update grading logic and rubrics in task definitions
+4. **Report results**: Add downstream reporting for your benchmarks
 
 ## Usage Examples
 
@@ -177,6 +167,46 @@ results = runner.run_benchmark(
     agent,
     task_ids=['task_01_calendar', 'task_02_stock']
 )
+```
+
+## Results Exploration (jq)
+
+Assuming you have a benchmark results JSON file, here are some helpful `jq` snippets:
+
+- List all task scores:
+
+```bash
+jq '.tasks[] | {task_id, score: .grading.score}' file.json
+```
+
+- Show per-task pass/fail and total score:
+
+```bash
+jq '.tasks[] | {task_id, passed: .grading.passed, score: .grading.score}' file.json
+```
+
+- Sort tasks by score (ascending):
+
+```bash
+jq '.tasks | sort_by(.grading.score)[] | {task_id, score: .grading.score}' file.json
+```
+
+- Aggregate average score across tasks:
+
+```bash
+jq '{average_score: ([.tasks[].grading.score] | add / length)}' file.json
+```
+
+- Filter to failed tasks only:
+
+```bash
+jq '.tasks[] | select(.grading.passed == false) | {task_id, score: .grading.score}' file.json
+```
+
+- Get the overall score for a run:
+
+```bash
+jq '[.tasks[].grading.score] | add / length' file.json
 ```
 
 ## License
