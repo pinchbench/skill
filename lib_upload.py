@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Dict
 from urllib import error, request
 
-DEFAULT_SERVER_URL = "https://pinchbench.com"
+DEFAULT_SERVER_URL = "https://api.pinchbench.com"
 DEFAULT_TIMEOUT_SECONDS = 30.0
 CONFIG_DIR = Path(__file__).resolve().parent / ".pinchbench"
 CONFIG_PATH = CONFIG_DIR / "config.json"
@@ -48,7 +48,7 @@ def upload_results(
 
     Args:
         results_path: Path to the JSON results file
-        server_url: Override server URL (default: from env or pinchbench.com)
+        server_url: Override server URL (default: from env or api.pinchbench.com)
         token: Auth token (default: from PINCHBENCH_TOKEN env var)
         timeout_seconds: HTTP request timeout
         dry_run: If True, validate but don't actually send

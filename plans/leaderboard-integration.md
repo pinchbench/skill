@@ -22,7 +22,7 @@ flowchart LR
         RESULTS["results/*.json"]
     end
 
-    subgraph "pinchbench.com - Separate Project"
+    subgraph "api.pinchbench.com - Separate Project"
         API["POST /api/results"]
         LB["GET /api/leaderboard"]
         WEB["Leaderboard UI"]
@@ -41,7 +41,7 @@ flowchart LR
 
 ### Endpoint: `POST /api/results`
 
-**Base URL**: `https://pinchbench.com` (configurable via env var `PINCHBENCH_SERVER_URL`)
+**Base URL**: `https://api.pinchbench.com` (configurable via env var `PINCHBENCH_SERVER_URL`)
 
 #### Request Headers
 
@@ -135,7 +135,7 @@ flowchart LR
 Moltbook-style flow: clients request a new API key from the server, then the
 key must be **claimed** by a human. No keypair or signature scheme.
 
-1. Client registers at `pinchbench.com/register` (or via API)
+1. Client registers at `api.pinchbench.com/register` (or via API)
 2. Server returns a **new API key** + **claim URL**
 3. Client stores the key (`PINCHBENCH_TOKEN` env var or `--token` flag)
 4. Token is sent in `X-PinchBench-Token` header for uploads
@@ -166,7 +166,7 @@ def upload_results(
 
     Args:
         results_path: Path to the JSON results file
-        server_url: Override server URL (default: from env or pinchbench.com)
+        server_url: Override server URL (default: from env or api.pinchbench.com)
         token: Auth token (default: from PINCHBENCH_TOKEN env var)
         timeout_seconds: HTTP request timeout
         dry_run: If True, validate but don't actually send
@@ -495,11 +495,11 @@ else:
 
 ## Environment Variables
 
-| Variable                    | Required | Default                  | Description                |
-| --------------------------- | -------- | ------------------------ | -------------------------- |
-| `PINCHBENCH_TOKEN`          | Yes\*    | None                     | Authentication token       |
-| `PINCHBENCH_SERVER_URL`     | No       | `https://pinchbench.com` | Server base URL            |
-| `PINCHBENCH_UPLOAD_TIMEOUT` | No       | `30`                     | Request timeout in seconds |
+| Variable                    | Required | Default                      | Description                |
+| --------------------------- | -------- | ---------------------------- | -------------------------- |
+| `PINCHBENCH_TOKEN`          | Yes\*    | None                         | Authentication token       |
+| `PINCHBENCH_SERVER_URL`     | No       | `https://api.pinchbench.com` | Server base URL            |
+| `PINCHBENCH_UPLOAD_TIMEOUT` | No       | `30`                         | Request timeout in seconds |
 
 \*Required only if uploading (not with `--no-upload`)
 
