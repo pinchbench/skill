@@ -168,7 +168,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="PinchBench OpenClaw Benchmark Runner")
     parser.add_argument(
         "--model",
-        required=True,
+        required=False,
         help="Model identifier (e.g., anthropic/claude-sonnet-4)",
     )
     parser.add_argument(
@@ -269,6 +269,9 @@ def main():
         sys.exit(1)
 
     args = _parse_args()
+    if not args.model and not args.register:
+        logger.error("Missing required argument: --model (unless using --register)")
+        sys.exit(2)
 
     if args.register:
         try:
