@@ -15,6 +15,7 @@ from the tasks/ directory.
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from pathlib import Path
@@ -221,6 +222,27 @@ def _load_ascii_art(script_dir: Path, filename: str) -> str | None:
         return None
 
 
+def _supports_truecolor() -> bool:
+    if os.environ.get("NO_COLOR"):
+        return False
+    return sys.stdout.isatty()
+
+
+def _colorize_gradient(ascii_art: str) -> str:
+    if not _supports_truecolor():
+        return ascii_art
+    lines = ascii_art.splitlines()
+    if not lines:
+        return ascii_art
+    last_index = max(len(lines) - 1, 1)
+    colored_lines = []
+    for idx, line in enumerate(lines):
+        t = idx / last_index
+        green_blue = int(255 * (1 - t))
+        colored_lines.append(f"\x1b[38;2;255;{green_blue};{green_blue}m{line}\x1b[0m")
+    return "\n".join(colored_lines)
+
+
 def main():
     """Main entry point for the benchmark script."""
     # Determine tasks directory
@@ -230,7 +252,7 @@ def main():
     logger.info("🦞🦀🦐 PinchBench - OpenClaw Benchmarking")
     ascii_crab = _load_ascii_art(script_dir, "crab.txt")
     if ascii_crab:
-        print("\n" + ascii_crab + "\n")
+        print("\n" + _colorize_gradient(ascii_crab) + "\n")
     else:
         print("\n" + "🦀 " * 30)
         print("🦀 " * 30 + "\n")
