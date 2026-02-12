@@ -231,6 +231,7 @@ def _extract_usage_from_transcript(transcript: List[Dict[str, Any]]) -> Dict[str
         "cache_write_tokens": 0,
         "total_tokens": 0,
         "cost_usd": 0.0,
+        "request_count": 0,
     }
 
     for entry in transcript:
@@ -239,6 +240,7 @@ def _extract_usage_from_transcript(transcript: List[Dict[str, Any]]) -> Dict[str
         msg = entry.get("message", {})
         if msg.get("role") != "assistant":
             continue
+        totals["request_count"] += 1
         usage = msg.get("usage", {})
         totals["input_tokens"] += usage.get("input", 0)
         totals["output_tokens"] += usage.get("output", 0)

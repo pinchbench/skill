@@ -182,6 +182,11 @@ def _parse_args() -> argparse.Namespace:
         help="Results directory",
     )
     parser.add_argument(
+        "--register",
+        action="store_true",
+        help="Request a new API token and save it to local config",
+    )
+    parser.add_argument(
         "--no-upload",
         action="store_true",
         help="Skip uploading to server",
@@ -265,6 +270,20 @@ def main():
 
     args = _parse_args()
 
+    if args.register:
+        try:
+            from lib_upload import UploadError, register_token, save_token_config
+
+            token, claim_url = register_token()
+            config_path = save_token_config(token, claim_url)
+            logger.info("Saved token to %s", config_path)
+            if claim_url:
+                logger.info("Claim URL: %s", claim_url)
+            return
+        except UploadError as exc:
+            logger.error("Registration failed: %s", exc)
+            sys.exit(1)
+
     logger.info("🔧 Initializing BenchmarkRunner...")
     runner = BenchmarkRunner(tasks_dir)
 
@@ -311,6 +330,7 @@ def main():
         "model": args.model,
         "run_id": run_id,
         "timestamp": time.time(),
+        "suite": args.suite,
         "tasks": [
             {
                 "task_id": result["task_id"],
@@ -332,6 +352,17 @@ def main():
     logger.info("Saved results to %s", output_path)
     if args.no_upload:
         logger.info("Skipping upload (--no-upload)")
+    else:
+        try:
+            from lib_upload import UploadError, upload_results
+
+            result = upload_results(output_path)
+            if result.rank is not None:
+                logger.info("Uploaded to leaderboard: rank #%s", result.rank)
+            if result.leaderboard_url:
+                logger.info("View at: %s", result.leaderboard_url)
+        except UploadError as exc:
+            logger.warning("Upload failed: %s", exc)
 
 
 if __name__ == "__main__":

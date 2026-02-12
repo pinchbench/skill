@@ -63,6 +63,7 @@ dmypy.json
 # Project specific
 uv.lock
 results/
+.pinchbench/
 
 # Vultr
 create_instance.sh
