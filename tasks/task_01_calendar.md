@@ -98,7 +98,7 @@ def grade(transcript: list, workspace_path: str) -> dict:
         scores["time_correct"] = 0.0
 
     # Check for date (next Tuesday)
-    # This is approximate - we look for a date in the near future
+    # Require exact next-Tuesday date
     today = datetime.now()
     days_ahead = (1 - today.weekday()) % 7  # Tuesday is 1
     if days_ahead == 0:
@@ -110,11 +110,7 @@ def grade(transcript: list, workspace_path: str) -> dict:
     if expected_date in ics_content:
         scores["date_correct"] = 1.0
     else:
-        # Partial credit if any date is present
-        if re.search(r'DTSTART.*\d{8}', ics_content):
-            scores["date_correct"] = 0.5
-        else:
-            scores["date_correct"] = 0.0
+        scores["date_correct"] = 0.0
 
     return scores
 ```

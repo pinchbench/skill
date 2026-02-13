@@ -16,6 +16,7 @@ import argparse
 import json
 import logging
 import os
+import statistics
 import subprocess
 import sys
 import time
@@ -198,6 +199,12 @@ def _parse_args() -> argparse.Namespace:
         default=1.0,
         help="Scale all task timeouts",
     )
+    parser.add_argument(
+        "--runs",
+        type=int,
+        default=1,
+        help="Number of runs per task for averaging",
+    )
     return parser.parse_args()
 
 
@@ -329,21 +336,39 @@ def main():
     if task_ids is not None:
         tasks_to_run = [task for task in runner.tasks if task.task_id in task_ids]
 
+    runs_per_task = max(1, args.runs)
     for i, task in enumerate(tasks_to_run, 1):
-        logger.info("\n%s", "=" * 80)
-        logger.info("📋 Task %s/%s", i, len(tasks_to_run))
-        logger.info("%s", "=" * 80)
-        result = execute_openclaw_task(
-            task=task,
-            agent_id=agent_id,
-            model_id=args.model,
-            run_id=run_id,
-            timeout_multiplier=args.timeout_multiplier,
-            skill_dir=skill_dir,
-        )
-        grade = grade_task(task=task, execution_result=result, skill_dir=skill_dir)
-        grades_by_task_id[task.task_id] = grade
-        results.append(result)
+        task_grades = []
+        for run_index in range(runs_per_task):
+            logger.info("\n%s", "=" * 80)
+            logger.info(
+                "📋 Task %s/%s (Run %s/%s)",
+                i,
+                len(tasks_to_run),
+                run_index + 1,
+                runs_per_task,
+            )
+            logger.info("%s", "=" * 80)
+            result = execute_openclaw_task(
+                task=task,
+                agent_id=agent_id,
+                model_id=args.model,
+                run_id=f"{run_id}-{run_index + 1}",
+                timeout_multiplier=args.timeout_multiplier,
+                skill_dir=skill_dir,
+            )
+            grade = grade_task(task=task, execution_result=result, skill_dir=skill_dir)
+            task_grades.append(grade)
+            results.append(result)
+
+        task_scores = [grade.score for grade in task_grades]
+        grades_by_task_id[task.task_id] = {
+            "runs": [grade.to_dict() for grade in task_grades],
+            "mean": statistics.mean(task_scores),
+            "std": statistics.stdev(task_scores) if len(task_scores) > 1 else 0.0,
+            "min": min(task_scores),
+            "max": max(task_scores),
+        }
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -353,6 +378,7 @@ def main():
         "run_id": run_id,
         "timestamp": time.time(),
         "suite": args.suite,
+        "runs_per_task": runs_per_task,
         "tasks": [
             {
                 "task_id": result["task_id"],
@@ -362,7 +388,7 @@ def main():
                 "transcript_length": len(result["transcript"]),
                 "usage": result.get("usage", {}),
                 "workspace": result["workspace"],
-                "grading": grades_by_task_id[result["task_id"]].to_dict(),
+                "grading": grades_by_task_id[result["task_id"]],
                 "frontmatter": task.frontmatter,
             }
             for result in results

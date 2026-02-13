@@ -245,6 +245,9 @@ def _summarize_transcript(transcript: List[Dict[str, Any]]) -> str:
 def _build_judge_prompt(task: Task, transcript_summary: str, rubric: str) -> str:
     return (
         "You are grading an AI agent's performance on a task.\n\n"
+        "Be a strict evaluator. Reserve 1.0 for genuinely excellent performance. "
+        "An average acceptable completion should score around 0.6-0.7. "
+        "Deduct points for unnecessary steps, verbose output, and inefficient tool usage.\n\n"
         "## Task\n"
         f"{task.prompt}\n\n"
         "## Expected Behavior\n"
