@@ -362,6 +362,7 @@ def main():
     tasks_to_run = runner.tasks
     if task_ids is not None:
         tasks_to_run = [task for task in runner.tasks if task.task_id in task_ids]
+    tasks_by_id = {task.task_id: task for task in tasks_to_run}
 
     runs_per_task = max(1, args.runs)
     for i, task in enumerate(tasks_to_run, 1):
@@ -416,7 +417,7 @@ def main():
                 "usage": result.get("usage", {}),
                 "workspace": result["workspace"],
                 "grading": grades_by_task_id[result["task_id"]],
-                "frontmatter": task.frontmatter,
+                "frontmatter": tasks_by_id[result["task_id"]].frontmatter,
             }
             for result in results
         ],
