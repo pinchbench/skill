@@ -171,10 +171,13 @@ def _build_payload(results_path: Path) -> Dict[str, Any]:
     tasks = raw.get("tasks", [])
     total_score = 0.0
     max_score = 0.0
+    total_execution_time = 0.0
+    total_cost_usd = 0.0
     usage_summary = {
         "total_input_tokens": 0,
         "total_output_tokens": 0,
         "total_requests": 0,
+        "total_cost_usd": 0.0,
     }
 
     formatted_tasks: list[dict[str, Any]] = []
@@ -186,9 +189,13 @@ def _build_payload(results_path: Path) -> Dict[str, Any]:
         max_score += max_for_task
 
         usage = task.get("usage", {})
+        total_execution_time += float(task.get("execution_time", 0.0) or 0.0)
+        cost_usd = float(usage.get("cost_usd", 0.0) or 0.0)
+        total_cost_usd += cost_usd
         usage_summary["total_input_tokens"] += int(usage.get("input_tokens", 0))
         usage_summary["total_output_tokens"] += int(usage.get("output_tokens", 0))
         usage_summary["total_requests"] += int(usage.get("request_count", 0))
+        usage_summary["total_cost_usd"] += cost_usd
 
         formatted_tasks.append(
             {
@@ -217,6 +224,8 @@ def _build_payload(results_path: Path) -> Dict[str, Any]:
         "openclaw_version": _get_openclaw_version(),
         "total_score": round(total_score, 6),
         "max_score": round(max_score, 6),
+        "total_execution_time_seconds": round(total_execution_time, 6),
+        "total_cost_usd": round(total_cost_usd, 6),
         "tasks": formatted_tasks,
         "usage_summary": usage_summary,
         "metadata": {
