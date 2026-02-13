@@ -167,8 +167,20 @@ def prepare_task_workspace(skill_dir: Path, run_id: str, task: Task, agent_id: s
     return workspace
 
 
+def _get_agent_store_dir(agent_id: str) -> Path:
+    base_dir = Path.home() / ".openclaw" / "agents"
+    direct_dir = base_dir / agent_id
+    if direct_dir.exists():
+        return direct_dir
+    normalized_dir = base_dir / agent_id.replace(":", "-")
+    if normalized_dir.exists():
+        return normalized_dir
+    return direct_dir
+
+
 def _resolve_session_id_from_store(agent_id: str) -> str | None:
-    sessions_store = Path.home() / ".openclaw" / "agents" / agent_id / "sessions" / "sessions.json"
+    agent_dir = _get_agent_store_dir(agent_id)
+    sessions_store = agent_dir / "sessions" / "sessions.json"
     if not sessions_store.exists():
         return None
     try:
@@ -204,17 +216,35 @@ def _resolve_session_id_from_store(agent_id: str) -> str | None:
     return None
 
 
-def _load_transcript(agent_id: str, session_id: str) -> List[Dict[str, Any]]:
+def _find_recent_session_path(agent_dir: Path, started_at: float) -> Path | None:
+    sessions_dir = agent_dir / "sessions"
+    if not sessions_dir.exists():
+        return None
+    candidates = list(sessions_dir.glob("*.jsonl"))
+    if not candidates:
+        return None
+    tolerance_seconds = 5.0
+    recent_candidates = [
+        path for path in candidates if path.stat().st_mtime >= (started_at - tolerance_seconds)
+    ]
+    pool = recent_candidates or candidates
+    return max(pool, key=lambda path: path.stat().st_mtime)
+
+
+def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[Dict[str, Any]]:
     session_ids = [session_id]
     resolved_session_id = _resolve_session_id_from_store(agent_id)
     if resolved_session_id and resolved_session_id not in session_ids:
         session_ids.append(resolved_session_id)
 
+    logger.info("Looking for sessions: %s (resolved: %s)", session_ids, resolved_session_id)
+
     transcript_path = None
     last_candidate_path = None
+    agent_dir = _get_agent_store_dir(agent_id)
     for candidate in session_ids:
         candidate_path = (
-            Path.home() / ".openclaw" / "agents" / agent_id / "sessions" / f"{candidate}.jsonl"
+            agent_dir / "sessions" / f"{candidate}.jsonl"
         )
         last_candidate_path = candidate_path
         for attempt in range(3):
@@ -230,7 +260,11 @@ def _load_transcript(agent_id: str, session_id: str) -> List[Dict[str, Any]]:
             logger.warning("Transcript missing at %s", last_candidate_path)
         else:
             logger.warning("No session IDs to check for transcript")
-        return []
+        recent_path = _find_recent_session_path(agent_dir, started_at)
+        if recent_path is None:
+            return []
+        logger.info("Falling back to recent session transcript at %s", recent_path)
+        transcript_path = recent_path
 
     transcript: List[Dict[str, Any]] = []
     for line in transcript_path.read_text(encoding="utf-8").splitlines():
@@ -325,7 +359,7 @@ def execute_openclaw_task(
     except FileNotFoundError as exc:
         stderr = f"openclaw command not found: {exc}"
 
-    transcript = _load_transcript(agent_id, session_id)
+    transcript = _load_transcript(agent_id, session_id, start_time)
     usage = _extract_usage_from_transcript(transcript)
     execution_time = time.time() - start_time
 
@@ -398,7 +432,7 @@ def run_openclaw_prompt(
     except FileNotFoundError as exc:
         stderr = f"openclaw command not found: {exc}"
 
-    transcript = _load_transcript(agent_id, session_id)
+    transcript = _load_transcript(agent_id, session_id, start_time)
     execution_time = time.time() - start_time
 
     status = "success"
