@@ -195,6 +195,12 @@ def _parse_args() -> argparse.Namespace:
         help="Skip uploading to server",
     )
     parser.add_argument(
+        "--upload",
+        type=str,
+        metavar="RESULTS_JSON",
+        help="Upload a previous run's results JSON and exit (skips benchmarking)",
+    )
+    parser.add_argument(
         "--timeout-multiplier",
         type=float,
         default=1.0,
@@ -311,6 +317,25 @@ def main():
             return
         except UploadError as exc:
             logger.error("Registration failed: %s", exc)
+            sys.exit(1)
+
+    if args.upload:
+        results_path = Path(args.upload)
+        if not results_path.exists():
+            logger.error("Results file not found: %s", results_path)
+            sys.exit(1)
+        try:
+            from lib_upload import UploadError, upload_results
+
+            result = upload_results(results_path)
+            if result.rank is not None:
+                logger.info("Uploaded to leaderboard: rank #%s", result.rank)
+            if result.leaderboard_url:
+                logger.info("View at: %s", result.leaderboard_url)
+            logger.info("Upload complete.")
+            return
+        except UploadError as exc:
+            logger.error("Upload failed: %s", exc)
             sys.exit(1)
 
     logger.info("🔧 Initializing BenchmarkRunner...")
