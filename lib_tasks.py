@@ -33,7 +33,8 @@ class Task:
         automated_checks: Optional[str] = None,
         llm_judge_rubric: Optional[str] = None,
         grading_weights: Optional[Dict[str, float]] = None,
-        file_path: Optional[Path] = None
+        file_path: Optional[Path] = None,
+        frontmatter: Optional[Dict[str, Any]] = None,
     ):
         self.task_id = task_id
         self.name = name
@@ -48,6 +49,7 @@ class Task:
         self.llm_judge_rubric = llm_judge_rubric
         self.grading_weights = grading_weights
         self.file_path = file_path
+        self.frontmatter = frontmatter or {}
     
     def __repr__(self) -> str:
         return f"Task(id={self.task_id}, name={self.name}, category={self.category})"
@@ -67,6 +69,7 @@ class Task:
             'has_automated_checks': self.automated_checks is not None,
             'has_llm_judge_rubric': self.llm_judge_rubric is not None,
             'grading_weights': self.grading_weights,
+            'frontmatter': self.frontmatter,
         }
 
 
@@ -137,7 +140,8 @@ class TaskLoader:
             automated_checks=sections.get('Automated Checks', None),
             llm_judge_rubric=sections.get('LLM Judge Rubric', None),
             grading_weights=metadata.get('grading_weights', None),
-            file_path=task_file
+            file_path=task_file,
+            frontmatter=metadata,
         )
         
         return task

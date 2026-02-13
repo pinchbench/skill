@@ -363,6 +363,7 @@ def main():
                 "usage": result.get("usage", {}),
                 "workspace": result["workspace"],
                 "grading": grades_by_task_id[result["task_id"]].to_dict(),
+                "frontmatter": task.frontmatter,
             }
             for result in results
         ],

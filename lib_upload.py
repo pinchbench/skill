@@ -207,6 +207,7 @@ def _build_payload(results_path: Path) -> Dict[str, Any]:
                 "execution_time_seconds": task.get("execution_time"),
                 "breakdown": grading.get("breakdown", {}),
                 "notes": grading.get("notes", ""),
+                "frontmatter": task.get("frontmatter", {}),
             }
         )
 
