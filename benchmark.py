@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 
 from lib_agent import (
+    cleanup_agent_sessions,
     ensure_agent_exists,
     execute_openclaw_task,
     slugify_model,
@@ -327,6 +328,7 @@ def main():
     agent_workspace = Path(f"/tmp/pinchbench/{run_id}/agent_workspace")
 
     ensure_agent_exists(agent_id, args.model, agent_workspace)
+    cleanup_agent_sessions(agent_id)
 
     task_ids = _select_task_ids(runner.tasks, args.suite)
     results = []

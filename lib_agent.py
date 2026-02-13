@@ -112,6 +112,28 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
     return True
 
 
+def cleanup_agent_sessions(agent_id: str) -> None:
+    """Remove stored session transcripts for an agent to avoid unbounded growth."""
+    sessions_dir = Path.home() / ".openclaw" / "agents" / agent_id / "sessions"
+    if not sessions_dir.exists():
+        return
+    removed = 0
+    for path in sessions_dir.glob("*.jsonl"):
+        try:
+            path.unlink()
+            removed += 1
+        except OSError as exc:
+            logger.warning("Failed to remove session transcript %s: %s", path, exc)
+    sessions_store = sessions_dir / "sessions.json"
+    if sessions_store.exists():
+        try:
+            sessions_store.unlink()
+        except OSError as exc:
+            logger.warning("Failed to remove session store %s: %s", sessions_store, exc)
+    if removed:
+        logger.info("Removed %s old OpenClaw session transcripts for %s", removed, agent_id)
+
+
 def prepare_task_workspace(skill_dir: Path, run_id: str, task: Task, agent_id: str) -> Path:
     """
     Prepare workspace for a task by copying fixtures.
