@@ -219,6 +219,7 @@ def _build_payload(results_path: Path) -> Dict[str, Any]:
         "submission_id": str(uuid.uuid4()),
         "timestamp": _format_timestamp(raw.get("timestamp")),
         "client_version": client_version,
+        "benchmark_version": raw.get("benchmark_version"),
         "model": model,
         "provider": provider,
         "run_id": raw.get("run_id"),
