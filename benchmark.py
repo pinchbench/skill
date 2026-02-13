@@ -16,6 +16,7 @@ import argparse
 import json
 import logging
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -233,6 +234,23 @@ def _supports_truecolor() -> bool:
     return sys.stdout.isatty()
 
 
+def _get_git_version(script_dir: Path) -> str:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+            cwd=script_dir,
+        )
+    except (subprocess.SubprocessError, FileNotFoundError, OSError):
+        return ""
+    if result.returncode != 0:
+        return ""
+    return result.stdout.strip()
+
+
 def _colorize_gradient(ascii_art: str) -> str:
     if not _supports_truecolor():
         return ascii_art
@@ -331,6 +349,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     aggregate = {
         "model": args.model,
+        "benchmark_version": _get_git_version(script_dir),
         "run_id": run_id,
         "timestamp": time.time(),
         "suite": args.suite,

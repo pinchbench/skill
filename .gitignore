@@ -66,4 +66,4 @@ results/
 .pinchbench/
 
 # Vultr
-create_instance.sh
+scripts/
