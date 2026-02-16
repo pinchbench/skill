@@ -78,9 +78,21 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
         logger.error("openclaw CLI not found while listing agents")
         return False
 
-    if list_result.returncode == 0 and agent_id in list_result.stdout:
-        logger.info("Agent %s already exists", agent_id)
-        return False
+    if list_result.returncode == 0:
+        # Check for exact agent ID match — avoid substring false positives
+        # (e.g. "bench-foo-4" matching "bench-foo-4-5" in the output).
+        # Output format is "- <agent_id>" or "- <agent_id> (default)" per line.
+        existing_agents = set()
+        for line in list_result.stdout.splitlines():
+            line = line.strip()
+            if line.startswith("- "):
+                # Extract agent name: "- bench-foo-4-5" or "- main (default)"
+                name_part = line[2:].split()[0] if line[2:].strip() else ""
+                if name_part:
+                    existing_agents.add(name_part)
+        if agent_id in existing_agents:
+            logger.info("Agent %s already exists", agent_id)
+            return False
 
     normalized_model = normalize_model_id(model_id)
     logger.info("Creating OpenClaw agent %s", agent_id)
