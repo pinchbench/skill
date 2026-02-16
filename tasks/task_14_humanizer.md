@@ -13,7 +13,7 @@ workspace_files:
 
 ## Prompt
 
-I have a blog post in `ai_blog.txt` that sounds way too robotic and AI-generated. Can you use a humanizer skill to make it sound more natural and human-written? Save the humanized version to `humanized_blog.txt`.
+I have a blog post in `ai_blog.txt` that sounds way too robotic and AI-generated. First, install the "humanizer" skill from the skill registry using `/install humanizer`, then use it to make the text sound more natural and human-written. If the skill isn't available, you can manually rewrite it to sound more human. Save the humanized version to `humanized_blog.txt`.
 
 ---
 
@@ -50,13 +50,13 @@ The humanizer should address common AI writing patterns such as:
 
 ## LLM Judge Rubric
 
-### Criterion 1: Skill Usage (Weight: 25%)
+### Criterion 1: Skill Usage or Manual Rewrite (Weight: 25%)
 
-**Score 1.0**: Agent correctly identified and used a humanizer skill to transform the content.
-**Score 0.75**: Agent used a relevant skill but may not have used optimal parameters.
-**Score 0.5**: Agent attempted to use a skill but encountered issues or used a less appropriate one.
-**Score 0.25**: Agent tried to manually rewrite instead of using a humanizer skill.
-**Score 0.0**: Agent did not attempt to use any skill or tool for humanization.
+**Score 1.0**: Agent correctly installed and used a humanizer skill, OR performed a quality manual rewrite.
+**Score 0.75**: Agent attempted to install/use a skill and fell back to manual rewrite appropriately.
+**Score 0.5**: Agent attempted the task but with suboptimal approach.
+**Score 0.25**: Agent made minimal effort to transform the content.
+**Score 0.0**: Agent did not attempt to humanize the content at all.
 
 ### Criterion 2: Output Quality - Natural Voice (Weight: 35%)
 

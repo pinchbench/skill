@@ -1,7 +1,7 @@
 ---
 id: task_11_clawdhub
-name: Install ClawdHub Skill
-category: skills
+name: Create Project Structure
+category: file_ops
 grading_type: automated
 timeout_seconds: 120
 workspace_files: []
@@ -9,32 +9,42 @@ workspace_files: []
 
 ## Prompt
 
-Install the clawdhub skill from the OpenClaw skill registry. After installation, verify it's available by listing installed skills.
+Create a basic Python project structure for a library called "datautils". The project should include:
+
+1. A `src/datautils/` package directory with an `__init__.py` file
+2. A `tests/` directory with a `test_datautils.py` file
+3. A `pyproject.toml` file with basic project metadata (name, version 0.1.0, description)
+4. A `README.md` file with a title and brief description
+
+Please create this project structure in the current workspace.
 
 ## Expected Behavior
 
 The agent should:
 
-1. Use the `openclaw skills install clawdhub` command to install the clawdhub skill
-2. Wait for the installation to complete
-3. Verify the installation by running `openclaw skills list` or checking the skills directory
-4. Confirm the clawdhub skill is now available
+1. Create the directory structure: `src/datautils/`, `tests/`
+2. Create `src/datautils/__init__.py` with basic content
+3. Create `tests/test_datautils.py` with a placeholder test
+4. Create `pyproject.toml` with proper Python project metadata
+5. Create `README.md` with project documentation
 
-This tests the agent's ability to use the OpenClaw CLI to manage skills and work with the skill registry.
+This tests the agent's ability to create file structures and understand Python project conventions.
 
 ## Grading Criteria
 
-- [ ] Agent ran the `openclaw skills install` command
-- [ ] Agent specified `clawdhub` as the skill to install
-- [ ] Agent verified the installation (listed skills or checked workspace)
-- [ ] Agent confirmed successful installation in response
+- [ ] Agent created the `src/datautils/` directory structure
+- [ ] Agent created `__init__.py` in the package
+- [ ] Agent created `tests/` directory with test file
+- [ ] Agent created `pyproject.toml` with correct metadata
+- [ ] Agent created `README.md`
+- [ ] Agent confirmed successful creation
 
 ## Automated Checks
 
 ```python
 def grade(transcript: list, workspace_path: str) -> dict:
     """
-    Grade the clawdhub installation task based on command execution.
+    Grade the project structure creation task.
 
     Args:
         transcript: Parsed JSONL transcript as list of dicts
@@ -43,96 +53,44 @@ def grade(transcript: list, workspace_path: str) -> dict:
     Returns:
         Dict mapping criterion names to scores (0.0 to 1.0)
     """
-    import re
+    from pathlib import Path
 
-    scores = {
-        "ran_install_command": 0.0,
-        "specified_clawdhub": 0.0,
-        "verified_installation": 0.0,
-        "confirmed_success": 0.0,
-    }
+    scores = {}
+    workspace = Path(workspace_path)
 
-    install_command_found = False
-    clawdhub_specified = False
-    verified = False
-    confirmed = False
+    # Check directory structure
+    src_datautils = workspace / "src" / "datautils"
+    tests_dir = workspace / "tests"
 
-    for event in transcript:
-        if event.get("type") != "message":
-            continue
-        msg = event.get("message", {})
+    scores["src_directory_created"] = 1.0 if src_datautils.exists() else 0.0
+    scores["tests_directory_created"] = 1.0 if tests_dir.exists() else 0.0
 
-        # Check assistant messages for tool calls
-        if msg.get("role") == "assistant":
-            for item in msg.get("content", []):
-                if item.get("type") == "toolCall":
-                    tool_name = item.get("name", "")
-                    params = item.get("params", {})
+    # Check required files
+    init_file = src_datautils / "__init__.py"
+    test_file = tests_dir / "test_datautils.py"
+    pyproject = workspace / "pyproject.toml"
+    readme = workspace / "README.md"
 
-                    # Check for execute_command tool
-                    if tool_name in ["execute_command", "executeCommand"]:
-                        command = params.get("command", "")
+    scores["init_file_created"] = 1.0 if init_file.exists() else 0.0
+    scores["test_file_created"] = 1.0 if test_file.exists() else 0.0
+    scores["pyproject_created"] = 1.0 if pyproject.exists() else 0.0
+    scores["readme_created"] = 1.0 if readme.exists() else 0.0
 
-                        # Check if it's an install command
-                        if "openclaw" in command and "skills" in command and "install" in command:
-                            install_command_found = True
-
-                            # Check if clawdhub is specified
-                            if "clawdhub" in command.lower():
-                                clawdhub_specified = True
-
-                        # Check for verification command
-                        if "openclaw" in command and "skills" in command and "list" in command:
-                            verified = True
-
-                # Check text content for confirmation
-                if item.get("type") == "text":
-                    text = item.get("text", "").lower()
-                    if any(phrase in text for phrase in [
-                        "installed successfully",
-                        "successfully installed",
-                        "installation complete",
-                        "clawdhub is now available",
-                        "clawdhub has been installed",
-                        "skill is installed",
-                        "skill has been installed",
-                    ]):
-                        confirmed = True
-
-    # Also check for verification via directory listing or file reading
-    for event in transcript:
-        if event.get("type") != "message":
-            continue
-        msg = event.get("message", {})
-        if msg.get("role") == "assistant":
-            for item in msg.get("content", []):
-                if item.get("type") == "toolCall":
-                    tool_name = item.get("name", "")
-                    params = item.get("params", {})
-
-                    # Check for list_files on skills directory
-                    if tool_name in ["list_files", "listFiles"]:
-                        path = params.get("path", "")
-                        if "skills" in path.lower():
-                            verified = True
-
-                    # Check for read_file on skills
-                    if tool_name in ["read_file", "readFile"]:
-                        files = params.get("files", [])
-                        if any("skill" in str(f).lower() for f in files):
-                            verified = True
-
-    scores["ran_install_command"] = 1.0 if install_command_found else 0.0
-    scores["specified_clawdhub"] = 1.0 if clawdhub_specified else 0.0
-    scores["verified_installation"] = 1.0 if verified else 0.0
-    scores["confirmed_success"] = 1.0 if confirmed else 0.0
+    # Check pyproject.toml content
+    if pyproject.exists():
+        content = pyproject.read_text().lower()
+        has_name = "datautils" in content
+        has_version = "0.1.0" in content or "version" in content
+        scores["pyproject_has_metadata"] = 1.0 if (has_name and has_version) else 0.5 if has_name else 0.0
+    else:
+        scores["pyproject_has_metadata"] = 0.0
 
     return scores
 ```
 
 ## Additional Notes
 
-- The clawdhub skill provides access to the OpenClaw skill registry
-- Skills are installed to the workspace's `skills/` folder or the shared `~/.openclaw/skills/` directory
-- The agent should handle potential errors like network issues or skill not found gracefully
-- This task tests the agent's familiarity with OpenClaw's skill management system
+- This tests the agent's ability to create a proper Python project structure
+- The agent should understand Python packaging conventions
+- Files should have meaningful content, not just be empty placeholders
+- This is a common real-world task for starting new projects

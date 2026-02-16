@@ -403,7 +403,7 @@ workspace_files:
 
 ## Prompt
 
-You have access to a collection of emails in the emails/ folder related to a project at work. Search through all the emails to find everything related to "Project Alpha" and create a comprehensive summary document.
+You have access to a collection of emails in the `emails/` folder in your workspace (12 email files with dates in their filenames). Search through all the emails to find everything related to "Project Alpha" and create a comprehensive summary document.
 
 Save the summary to alpha_summary.md with the following sections:
 

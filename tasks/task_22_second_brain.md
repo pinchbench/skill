@@ -8,27 +8,25 @@ multi_session: true
 sessions:
   - id: store_knowledge
     prompt: |
-      I want you to remember this important information for me - store it in your memory system so you can recall it later:
+      I want you to remember this important information for me. Please save it to a file called `memory/MEMORY.md` so you (or a future session) can recall it later:
 
       My favorite programming language is Rust. I started learning it on January 15, 2024. My mentor's name is Dr. Elena Vasquez from Stanford. The project I'm working on is called "NeonDB" - it's a distributed key-value store. The secret code phrase for our team is "purple elephant sunrise".
 
-      Please confirm you've stored this information in your memory.
+      Save this information to `memory/MEMORY.md` and confirm you've stored it.
   - id: conversation
     prompt: |
-      What programming language am I learning? And what's the name of my current project?
+      What programming language am I learning? And what's the name of my current project? You can check the memory/MEMORY.md file if needed.
   - id: new_session_recall
     new_session: true
     prompt: |
-      /recall
-
-      I need you to remember some things about me. Can you tell me:
+      I previously saved some personal information in a file called `memory/MEMORY.md`. Please read that file and answer these questions:
       1. What is my favorite programming language?
       2. When did I start learning it?
       3. What is my mentor's name and affiliation?
       4. What is my project called and what does it do?
       5. What is my team's secret code phrase?
 
-      Please answer all 5 questions based on what you remember about me.
+      Please answer all 5 questions based on what you find in the file.
 workspace_files: []
 ---
 
@@ -42,18 +40,19 @@ The agent should:
 
 1. **Session 1 (Store Knowledge)**:
    - Receive personal information to remember
-   - Use its memory/knowledge management system to persist the information
-   - Confirm the information has been stored
-   - This tests the "write" capability of the second brain
+   - Create the `memory/` directory if needed
+   - Save the information to `memory/MEMORY.md` in a structured format
+   - Confirm the information has been stored to the file
+   - This tests the agent's ability to persist information via file storage
 
 2. **Session 2 (Conversation)**:
-   - Recall information from the same session
+   - Recall information from the same session (or by reading the file)
    - Correctly answer that the user is learning Rust
    - Correctly state the project is called NeonDB
 
 3. **Session 3 (New Session Recall)**:
    - Start a fresh session (simulating the user coming back later)
-   - Use recall/memory retrieval to access previously stored information
+   - Read the `memory/MEMORY.md` file created in session 1
    - Accurately recall all 5 pieces of information:
      - Favorite language: Rust
      - Start date: January 15, 2024
@@ -61,7 +60,7 @@ The agent should:
      - Project: NeonDB, a distributed key-value store
      - Secret phrase: "purple elephant sunrise"
 
-This tests the core "second brain" capability: persisting knowledge across sessions and accurately retrieving it when needed.
+This tests the agent's ability to persist knowledge via file storage and retrieve it in a new session.
 
 ## Grading Criteria
 
@@ -83,8 +82,7 @@ def grade(transcript: list, workspace_path: str) -> dict:
     """
     Grade the second brain knowledge persistence task.
 
-    This task is primarily graded by LLM judge due to its conversational nature,
-    but we can check for memory tool usage in the transcript.
+    Checks if the agent created the memory file with correct content.
 
     Args:
         transcript: Parsed JSONL transcript as list of dicts
@@ -93,46 +91,42 @@ def grade(transcript: list, workspace_path: str) -> dict:
     Returns:
         Dict mapping criterion names to scores (0.0 to 1.0)
     """
+    from pathlib import Path
     import re
 
     scores = {}
+    workspace = Path(workspace_path)
 
-    # Check if agent used memory-related tools
-    memory_tool_used = False
-    recall_tool_used = False
+    # Check if memory file was created
+    memory_file = workspace / "memory" / "MEMORY.md"
+    if not memory_file.exists():
+        # Try alternative paths
+        alt_paths = [
+            workspace / "MEMORY.md",
+            workspace / "memory.md",
+        ]
+        for alt in alt_paths:
+            if alt.exists():
+                memory_file = alt
+                break
 
-    memory_tool_patterns = [
-        "memory", "store", "save", "persist", "remember",
-        "knowledge", "note", "record"
-    ]
+    if memory_file.exists():
+        scores["memory_tool_used"] = 1.0
+        content = memory_file.read_text().lower()
 
-    recall_tool_patterns = [
-        "recall", "retrieve", "remember", "fetch", "search",
-        "query", "lookup", "find"
-    ]
+        # Check for key facts in the file
+        has_rust = "rust" in content
+        has_date = "january" in content and "2024" in content
+        has_mentor = "elena" in content and "vasquez" in content
+        has_project = "neondb" in content
+        has_phrase = "purple" in content and "elephant" in content and "sunrise" in content
 
-    for event in transcript:
-        if event.get("type") != "message":
-            continue
-        msg = event.get("message", {})
-        if msg.get("role") == "assistant":
-            for item in msg.get("content", []):
-                if item.get("type") == "toolCall":
-                    tool_name = item.get("name", "").lower()
-                    params = str(item.get("params", {})).lower()
+        fact_count = sum([has_rust, has_date, has_mentor, has_project, has_phrase])
+        scores["recall_tool_used"] = fact_count / 5.0
+    else:
+        scores["memory_tool_used"] = 0.0
+        scores["recall_tool_used"] = 0.0
 
-                    # Check for memory storage tools
-                    if any(p in tool_name or p in params for p in memory_tool_patterns):
-                        memory_tool_used = True
-
-                    # Check for recall/retrieval tools
-                    if any(p in tool_name or p in params for p in recall_tool_patterns):
-                        recall_tool_used = True
-
-    scores["memory_tool_used"] = 1.0 if memory_tool_used else 0.0
-    scores["recall_tool_used"] = 1.0 if recall_tool_used else 0.0
-
-    # The rest will be graded by LLM judge
     return scores
 ```
 
@@ -140,10 +134,10 @@ def grade(transcript: list, workspace_path: str) -> dict:
 
 ### Criterion 1: Memory Storage (Weight: 15%)
 
-**Score 1.0**: Agent explicitly uses a memory/knowledge management tool or system to store the user's information. Confirms storage and demonstrates understanding of persistent memory.
-**Score 0.75**: Agent stores information but confirmation is unclear or storage method is ambiguous.
-**Score 0.5**: Agent acknowledges the information but storage mechanism is questionable.
-**Score 0.25**: Agent only repeats back information without clear storage action.
+**Score 1.0**: Agent creates `memory/MEMORY.md` file with all the user's information stored in a clear, organized format. Confirms the file was created.
+**Score 0.75**: Agent saves information to a file but uses a different path or format. Storage is functional.
+**Score 0.5**: Agent acknowledges the information but storage to file is incomplete or messy.
+**Score 0.25**: Agent only repeats back information without saving to a file.
 **Score 0.0**: Agent does not attempt to store information or ignores the request.
 
 ### Criterion 2: Same-Session Recall (Weight: 15%)
@@ -156,11 +150,11 @@ def grade(transcript: list, workspace_path: str) -> dict:
 
 ### Criterion 3: Cross-Session Memory Retrieval (Weight: 20%)
 
-**Score 1.0**: Agent proactively uses recall/memory tools in new session and successfully retrieves stored information.
-**Score 0.75**: Agent retrieves most information but retrieval process is inefficient.
-**Score 0.5**: Agent attempts retrieval but only partially succeeds.
-**Score 0.25**: Agent makes minimal effort to recall from memory system.
-**Score 0.0**: Agent does not attempt to access stored memory or claims no memory of the user.
+**Score 1.0**: Agent reads the `memory/MEMORY.md` file in the new session and successfully retrieves stored information.
+**Score 0.75**: Agent retrieves most information but takes extra steps or reads wrong file first.
+**Score 0.5**: Agent attempts retrieval but only partially succeeds in finding the file.
+**Score 0.25**: Agent makes minimal effort to read the memory file.
+**Score 0.0**: Agent does not attempt to read the file or claims no memory exists.
 
 ### Criterion 4: Accuracy of Recalled Facts (Weight: 40%)
 
@@ -188,9 +182,9 @@ def grade(transcript: list, workspace_path: str) -> dict:
 
 ## Additional Notes
 
-- This task specifically tests the "second brain" paradigm where AI agents persist user knowledge across sessions
-- The `/recall` command in session 3 is a hint to the agent to use its memory retrieval capabilities
+- This task tests the "second brain" paradigm where AI agents persist user knowledge across sessions using file storage
+- The file `memory/MEMORY.md` acts as a simple but effective persistence mechanism
 - The secret phrase "purple elephant sunrise" is intentionally arbitrary to test verbatim recall vs. semantic understanding
 - The multi-session format with `new_session: true` simulates a user returning after closing and reopening the agent
-- Agents without persistent memory capabilities will score 0 on cross-session recall
-- This task is important for evaluating knowledge management and personal assistant capabilities
+- Agents that successfully create and read the memory file should score well on cross-session recall
+- This task tests practical file-based memory/note-taking capabilities

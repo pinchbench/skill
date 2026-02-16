@@ -290,7 +290,7 @@ workspace_files:
 
 ## Prompt
 
-You are helping triage an overflowing email inbox. Read all emails in the inbox/ folder and create a triage report saved to triage_report.md. For each email, assign:
+You are helping triage an overflowing email inbox. The emails have been provided to you in the `inbox/` folder in your workspace (files named `email_01.txt` through `email_13.txt`). Read all 13 emails and create a triage report saved to `triage_report.md`. For each email, assign:
 
 1. **Priority**: P0 (drop everything), P1 (today), P2 (this week), P3 (when convenient), P4 (no action / archive)
 2. **Category**: one of "incident", "client", "internal-request", "administrative", "code-review", "automated", "newsletter", "spam"
@@ -630,6 +630,7 @@ This task tests a practical, everyday AI assistant scenario: processing a backlo
 5. **Actionability**: Recommendations should be specific enough to actually act on, not generic platitudes
 
 The email set intentionally includes:
+
 - A clear P0 incident with a correlated alert (tests linking)
 - A high-value client communication (tests business judgment)
 - Time-sensitive compliance items (tests deadline awareness)

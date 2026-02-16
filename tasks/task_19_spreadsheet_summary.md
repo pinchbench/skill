@@ -16,12 +16,12 @@ workspace_files:
 
 ## Prompt
 
-I have two data files in my workspace:
+I have two data files in my workspace that have been provided for you to analyze:
 
-1. `quarterly_sales.csv` — contains sales transactions with columns: Date, Region, Product, Units_Sold, Unit_Price, Revenue, Cost
-2. `company_expenses.xlsx` — an Excel workbook with two sheets: "Q1_Expenses" (employee expense reports) and "Budgets" (departmental budget allocations)
+1. `quarterly_sales.csv` — a CSV file with sales transactions containing columns: Date, Region, Product, Units_Sold, Unit_Price, Revenue, Cost (24 rows of data)
+2. `company_expenses.xlsx` — an Excel workbook with two sheets: "Q1_Expenses" (employee expense reports with 12 records) and "Budgets" (departmental budget allocations)
 
-Please analyze both files and write a summary report to `data_summary.md` that includes:
+Please read and analyze both files, then write a summary report to `data_summary.md` that includes:
 
 - **CSV Analysis**: Total revenue, total profit (revenue minus cost), total units sold, the top-performing region by revenue, and the top-selling product by revenue.
 - **Excel Analysis**: Total Q1 expenses, the department with the highest expenses, the employee with the highest total expenses, and a comparison of Q1 actual expenses vs Q1 budgets by department.
@@ -41,6 +41,7 @@ The agent should:
 The CSV contains 24 rows of sales data across 4 regions (North, South, East, West) and 3 products (Widget A, B, C). The Excel file has 12 expense records across 4 departments and a separate budgets sheet with quarterly allocations for each department.
 
 Key expected values:
+
 - CSV total revenue: $119,900
 - CSV total profit: $47,960
 - CSV total units: 3,775
@@ -247,6 +248,7 @@ This task tests the agent's ability to:
 The data is intentionally small and clean (no missing values, no encoding issues) so the focus is on correctly reading both formats and computing accurate summaries. The CSV has 24 rows and the Excel has 12 expense rows plus 4 budget rows across 2 sheets.
 
 Known correct values for automated checking:
+
 - CSV: 24 rows, total revenue $119,900, total cost $71,940, total profit $47,960, 3,775 units
 - CSV top region: East ($33,075), top product: Widget B ($47,400)
 - Excel Q1 expenses: $15,430, top dept: Engineering ($7,680), top employee: Alice Chen ($5,400)
