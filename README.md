@@ -92,16 +92,33 @@ export PINCHBENCH_OFFICIAL_KEY=your_official_key
 
 | Flag                     | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| `--model MODEL`          | Model to test (e.g., `openrouter/anthropic/claude-sonnet-4`)                  |
-| `--judge MODEL`          | Judge model for LLM grading (default: `openrouter/anthropic/claude-opus-4.5`) |
+| `--model MODEL`          | Model to test (e.g., `anthropic/claude-sonnet-4`)                             |
+| `--judge MODEL`          | Judge model for LLM grading (default: openrouter/anthropic/claude-opus-4.5)   |
 | `--suite SUITE`          | `all`, `automated-only`, or comma-separated task IDs                          |
 | `--runs N`               | Number of runs per task for averaging                                         |
 | `--timeout-multiplier N` | Scale timeouts for slower models                                              |
+| `--thinking LEVELS`      | Comma-separated thinking levels (e.g., `low,medium,high`)                     |
 | `--output-dir DIR`       | Where to save results (default: `results/`)                                   |
 | `--no-upload`            | Skip uploading to leaderboard                                                 |
 | `--register`             | Request an API token for submissions                                          |
 | `--upload FILE`          | Upload a previous results JSON                                                |
 | `--official-key KEY`     | Mark submission as official (or use `PINCHBENCH_OFFICIAL_KEY` env var)         |
+
+## Thinking Levels
+
+Many models support configurable thinking/reasoning levels. Test how different reasoning depths affect task performance:
+
+```bash
+# Test multiple thinking levels
+./scripts/run.sh --model anthropic/claude-sonnet-4 --thinking low,medium,high
+
+# Compare a single level against default
+./scripts/run.sh --model anthropic/claude-sonnet-4 --thinking high
+```
+
+Valid levels: `off`, `minimal`, `low`, `medium`, `high`
+
+Results include a `thinking_aggregates` section with per-level statistics, and each task result includes the `thinking_level` used.
 
 ## Contributing Tasks
 

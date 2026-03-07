@@ -615,6 +615,10 @@ def _extract_usage_from_transcript(transcript: List[Dict[str, Any]]) -> Dict[str
     return totals
 
 
+# Valid thinking levels for OpenClaw agents
+VALID_THINKING_LEVELS = ("off", "minimal", "low", "medium", "high")
+
+
 def execute_openclaw_task(
     *,
     task: Task,
@@ -624,14 +628,13 @@ def execute_openclaw_task(
     timeout_multiplier: float,
     skill_dir: Path,
     verbose: bool = False,
+    thinking_level: str | None = None,
 ) -> Dict[str, Any]:
     logger.info("🤖 Agent [%s] starting task: %s", agent_id, task.task_id)
     logger.info("   Task: %s", task.name)
     logger.info("   Category: %s", task.category)
-    if verbose:
-        logger.info(
-            "   Prompt: %s", task.prompt[:500] + "..." if len(task.prompt) > 500 else task.prompt
-        )
+    if thinking_level:
+        logger.info("   Thinking: %s", thinking_level)
 
     # Clean up previous session transcripts so we can reliably find this task's
     # transcript (OpenClaw uses its own UUID-based naming, not our session ID).
@@ -646,13 +649,10 @@ def execute_openclaw_task(
     exit_code = -1
     timed_out = False
 
-    # Check if this is a multi-session task
     sessions = task.frontmatter.get("sessions", [])
     if sessions:
-        # Multi-session task: send each prompt in sequence
         logger.info("📋 Multi-session task with %d sessions", len(sessions))
         for i, session_entry in enumerate(sessions, 1):
-            # Extract prompt text from session entry (handle both string and dict formats)
             if isinstance(session_entry, str):
                 session_prompt = session_entry
             elif isinstance(session_entry, dict):
@@ -668,17 +668,20 @@ def execute_openclaw_task(
                 timed_out = True
                 break
             try:
+                cmd = [
+                    "openclaw",
+                    "agent",
+                    "--agent",
+                    agent_id,
+                    "--session-id",
+                    session_id,
+                    "--message",
+                    session_prompt,
+                ]
+                if thinking_level:
+                    cmd.extend(["--thinking", thinking_level])
                 result = subprocess.run(
-                    [
-                        "openclaw",
-                        "agent",
-                        "--agent",
-                        agent_id,
-                        "--session-id",
-                        session_id,
-                        "--message",
-                        session_prompt,
-                    ],
+                    cmd,
                     capture_output=True,
                     text=True,
                     cwd=str(workspace),
@@ -699,19 +702,21 @@ def execute_openclaw_task(
                 stderr = f"openclaw command not found: {exc}"
                 break
     else:
-        # Single-session task: send task.prompt once
         try:
+            cmd = [
+                "openclaw",
+                "agent",
+                "--agent",
+                agent_id,
+                "--session-id",
+                session_id,
+                "--message",
+                task.prompt,
+            ]
+            if thinking_level:
+                cmd.extend(["--thinking", thinking_level])
             result = subprocess.run(
-                [
-                    "openclaw",
-                    "agent",
-                    "--agent",
-                    agent_id,
-                    "--session-id",
-                    session_id,
-                    "--message",
-                    task.prompt,
-                ],
+                cmd,
                 capture_output=True,
                 text=True,
                 cwd=str(workspace),
@@ -781,6 +786,7 @@ def execute_openclaw_task(
     return {
         "agent_id": agent_id,
         "task_id": task.task_id,
+        "thinking_level": thinking_level,
         "status": status,
         "transcript": transcript,
         "usage": usage,
@@ -799,6 +805,7 @@ def run_openclaw_prompt(
     prompt: str,
     workspace: Path,
     timeout_seconds: float,
+    thinking_level: str | None = None,
 ) -> Dict[str, Any]:
     """Run a single OpenClaw prompt for helper agents like the judge."""
     # Clean up previous session transcripts so we can reliably find this
@@ -843,17 +850,20 @@ def run_openclaw_prompt(
             timed_out = True
             break
         try:
+            cmd = [
+                "openclaw",
+                "agent",
+                "--agent",
+                agent_id,
+                "--session-id",
+                session_id,
+                "--message",
+                chunk,
+            ]
+            if thinking_level:
+                cmd.extend(["--thinking", thinking_level])
             result = subprocess.run(
-                [
-                    "openclaw",
-                    "agent",
-                    "--agent",
-                    agent_id,
-                    "--session-id",
-                    session_id,
-                    "--message",
-                    chunk,
-                ],
+                cmd,
                 capture_output=True,
                 text=True,
                 cwd=str(workspace),
