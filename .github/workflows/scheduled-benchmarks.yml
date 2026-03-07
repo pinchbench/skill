@@ -24,6 +24,10 @@ on:
         default: true
         type: boolean
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   # Build the Docker image with OpenClaw pre-installed
   build-image:
