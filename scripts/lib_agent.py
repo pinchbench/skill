@@ -36,6 +36,29 @@ def _coerce_subprocess_output(value: Any) -> str:
     return str(value)
 
 
+# Thinking levels supported by OpenClaw
+# See: https://docs.openclaw.ai/tools/thinking
+THINKING_LEVELS = ("off", "minimal", "low", "medium", "high", "xhigh", "adaptive")
+
+# Models that support xhigh thinking level (high reasoning budget)
+# Sourced from OpenClaw src/auto-reply/thinking.ts XHIGH_MODEL_REFS
+XHIGH_MODELS = {
+    # OpenAI
+    "openai/gpt-5.4",
+    "openai/gpt-5.4-pro",
+    "openai/gpt-5.2",
+    # OpenAI Codex
+    "openai-codex/gpt-5.4",
+    "openai-codex/gpt-5.3-codex",
+    "openai-codex/gpt-5.3-codex-spark",
+    "openai-codex/gpt-5.2-codex",
+    "openai-codex/gpt-5.1-codex",
+    # GitHub Copilot
+    "github-copilot/gpt-5.2-codex",
+    "github-copilot/gpt-5.2",
+}
+
+
 def slugify_model(model_id: str) -> str:
     return model_id.replace("/", "-").replace(".", "-").lower()
 
@@ -153,6 +176,47 @@ def validate_openrouter_model(model_id: str, timeout_seconds: float = 10.0) -> b
                 )
 
     raise ModelValidationError(error_msg)
+
+
+def supports_xhigh_thinking(model_id: str) -> bool:
+    """Check if a model supports xhigh thinking level."""
+    normalized = slugify_model(model_id)
+    model_lower = model_id.lower()
+    # Check full provider/model form
+    if normalized in {m.lower() for m in XHIGH_MODELS}:
+        return True
+    # Check just model ID (without provider)
+    model_only = model_lower.split("/")[-1] if "/" in model_lower else model_lower
+    return model_only in {m.split("/")[-1].lower() for m in XHIGH_MODELS}
+
+
+def validate_thinking_level(level: str, model_id: Optional[str] = None) -> Optional[str]:
+    """
+    Validate a thinking level and check model compatibility.
+
+    Args:
+        level: The thinking level to validate
+        model_id: Optional model ID to check xhigh compatibility
+
+    Returns:
+        The validated level, or None if invalid
+    """
+    level_lower = level.lower().strip()
+    if level_lower not in THINKING_LEVELS:
+        logger.warning(
+            "Invalid thinking level '%s'. Valid levels: %s",
+            level,
+            ", ".join(THINKING_LEVELS),
+        )
+        return None
+    if level_lower == "xhigh" and model_id and not supports_xhigh_thinking(model_id):
+        logger.warning(
+            "Thinking level 'xhigh' not supported by model '%s'. xhigh is only available for: %s",
+            model_id,
+            ", ".join(sorted(set(m.split("/")[1] for m in XHIGH_MODELS))),
+        )
+        return None
+    return level_lower
 
 
 def _get_agent_workspace(agent_id: str) -> Path | None:
@@ -615,10 +679,6 @@ def _extract_usage_from_transcript(transcript: List[Dict[str, Any]]) -> Dict[str
     return totals
 
 
-# Valid thinking levels for OpenClaw agents
-VALID_THINKING_LEVELS = ("off", "minimal", "low", "medium", "high")
-
-
 def execute_openclaw_task(
     *,
     task: Task,
@@ -805,7 +865,7 @@ def run_openclaw_prompt(
     prompt: str,
     workspace: Path,
     timeout_seconds: float,
-    thinking_level: str | None = None,
+    thinking_level: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Run a single OpenClaw prompt for helper agents like the judge."""
     # Clean up previous session transcripts so we can reliably find this
