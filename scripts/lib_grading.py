@@ -296,8 +296,38 @@ def _ensure_judge_agent(judge_agent_prefix: str, judge_model: str, skill_dir: Pa
     model_slug = slugify_model(judge_model)
     agent_id = f"{judge_agent_prefix}-{model_slug}"
     workspace = Path("/tmp/pinchbench/judge/workspace")
-    ensure_agent_exists(agent_id, judge_model, workspace)
+    created = ensure_agent_exists(agent_id, judge_model, workspace)
+    # OpenClaw `agents add` scaffolds AGENTS.md, SOUL.md, BOOTSTRAP.md, etc.
+    # into the workspace. These template files instruct the agent to perform a
+    # bootstrap / personality flow (read SOUL.md, do introductions, etc.)
+    # instead of acting as a pure grading function. Remove them so the judge
+    # only responds to the grading prompt with JSON.
+    _clean_judge_workspace(workspace)
     return agent_id
+
+
+def _clean_judge_workspace(workspace: Path) -> None:
+    """Remove OpenClaw-scaffolded template files that interfere with judge grading."""
+    import shutil
+
+    template_files = (
+        "AGENTS.md", "SOUL.md", "BOOTSTRAP.md", "HEARTBEAT.md",
+        "IDENTITY.md", "TOOLS.md", "USER.md", "MEMORY.md",
+    )
+    template_dirs = (".git", "memory")
+    removed = 0
+    for name in template_files:
+        p = workspace / name
+        if p.exists():
+            p.unlink()
+            removed += 1
+    for name in template_dirs:
+        d = workspace / name
+        if d.is_dir():
+            shutil.rmtree(d, ignore_errors=True)
+            removed += 1
+    if removed:
+        logger.info("Cleaned %d template files/dirs from judge workspace", removed)
 
 
 def _parse_judge_response(transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
