@@ -92,8 +92,8 @@ export PINCHBENCH_OFFICIAL_KEY=your_official_key
 
 | Flag                     | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| `--model MODEL`          | Model to test (e.g., `anthropic/claude-sonnet-4`)                             |
-| `--judge MODEL`          | Judge model for LLM grading (default: openrouter/anthropic/claude-opus-4.5)   |
+| `--model MODEL`          | Model to test (e.g., `openrouter/anthropic/claude-sonnet-4`)                  |
+| `--judge MODEL`          | Judge model for LLM grading (default: `openrouter/anthropic/claude-opus-4.5`) |
 | `--suite SUITE`          | `all`, `automated-only`, or comma-separated task IDs                          |
 | `--runs N`               | Number of runs per task for averaging                                         |
 | `--timeout-multiplier N` | Scale timeouts for slower models                                              |
