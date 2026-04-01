@@ -169,7 +169,7 @@ def grade(transcript: list, workspace_path: str) -> dict:
             for item in msg.get("content", []):
                 if item.get("type") == "toolCall":
                     tool_name = item.get("name", "").lower()
-                    params = item.get("params", {})
+                    params = item.get("arguments", item.get("params", {}))
                     # Check for web search / fetch tools
                     if any(t in tool_name for t in [
                         "web_search", "websearch", "search",

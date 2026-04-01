@@ -151,9 +151,15 @@ def grade(transcript: list, workspace_path: str) -> dict:
                     # - read_file / readFile (Cursor, Windsurf, Claude Code)
                     if tool_name in ["read", "read_file", "readFile"]:
                         args = item.get("arguments", item.get("params", {}))
-                        path_val = str(args.get("path", args.get("file_path", "")))
                         files = args.get("files", [])
-                        if "notes.md" in path_val or any("notes.md" in str(f) for f in files):
+                        path_candidates = [
+                            args.get("path", ""),
+                            args.get("file_path", ""),
+                            args.get("file", ""),
+                        ]
+                        if any("notes.md" in str(f) for f in files) or any(
+                            "notes.md" in str(path) for path in path_candidates if path
+                        ):
                             read_notes = True
                             break
 

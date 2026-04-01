@@ -562,6 +562,93 @@ def _parse_judge_text(raw_text: str) -> Dict[str, Any]:
     return {}
 
 
+def _coerce_score_value(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value.strip())
+        except ValueError:
+            return None
+    if isinstance(value, dict):
+        for key in ("score", "value", "weighted_score"):
+            if key in value:
+                return _coerce_score_value(value[key])
+    return None
+
+
+def _extract_named_scores(parsed: Dict[str, Any]) -> Dict[str, float]:
+    scores: Dict[str, float] = {}
+
+    if "scores" in parsed and isinstance(parsed["scores"], dict):
+        for key, value in parsed["scores"].items():
+            coerced = _coerce_score_value(value)
+            if coerced is not None:
+                scores[str(key)] = coerced
+
+    if "criteria_scores" in parsed:
+        criteria = parsed["criteria_scores"]
+        if isinstance(criteria, dict):
+            for key, value in criteria.items():
+                coerced = _coerce_score_value(value)
+                if coerced is not None:
+                    scores[str(key)] = coerced
+
+    if "criterion_scores" in parsed:
+        criteria = parsed["criterion_scores"]
+        if isinstance(criteria, dict):
+            for key, value in criteria.items():
+                coerced = _coerce_score_value(value)
+                if coerced is not None:
+                    scores[str(key)] = coerced
+        elif isinstance(criteria, list):
+            for idx, item in enumerate(criteria, start=1):
+                if isinstance(item, dict):
+                    name = (
+                        item.get("name")
+                        or item.get("criterion")
+                        or item.get("label")
+                        or f"criterion_{idx}"
+                    )
+                    coerced = _coerce_score_value(item)
+                else:
+                    name = f"criterion_{idx}"
+                    coerced = _coerce_score_value(item)
+                if coerced is not None:
+                    scores[str(name)] = coerced
+
+    for key, value in parsed.items():
+        if re.fullmatch(r"criterion\d+", str(key), re.IGNORECASE):
+            coerced = _coerce_score_value(value)
+            if coerced is not None:
+                scores[str(key)] = coerced
+
+    return scores
+
+
+def _extract_total_score(parsed: Dict[str, Any], scores: Dict[str, float]) -> float | None:
+    for key in ("total", "score", "overall_score", "completionScore", "total_score"):
+        if key in parsed:
+            coerced = _coerce_score_value(parsed[key])
+            if coerced is not None:
+                return coerced
+
+    overall = parsed.get("overall")
+    if isinstance(overall, dict):
+        coerced = _coerce_score_value(overall)
+        if coerced is not None:
+            return coerced
+
+    if scores:
+        values = [v for v in scores.values() if isinstance(v, (int, float))]
+        if values:
+            return sum(values) / len(values)
+
+    return None
+
+
 def _normalize_judge_response(parsed: Dict[str, Any]) -> Dict[str, Any]:
     """
     Normalize judge response to expected format with 'scores', 'total', and 'notes'.
@@ -572,39 +659,9 @@ def _normalize_judge_response(parsed: Dict[str, Any]) -> Dict[str, Any]:
     - {"score": 0.9, "justification": "..."}  (simplified format)
     """
     result: Dict[str, Any] = {"scores": {}, "total": None, "notes": ""}
-    
-    # Extract scores from various keys
-    if "scores" in parsed:
-        scores_data = parsed["scores"]
-        if isinstance(scores_data, dict):
-            # Handle nested structure: {"criterion": {"score": 0.9, "weight": 0.3}}
-            for key, value in scores_data.items():
-                if isinstance(value, dict) and "score" in value:
-                    result["scores"][key] = float(value["score"]) if isinstance(value["score"], (int, float, str)) else value["score"]
-                elif isinstance(value, (int, float)):
-                    result["scores"][key] = value
-    elif "criteria_scores" in parsed:
-        # Handle Claude's alternate format
-        criteria = parsed["criteria_scores"]
-        if isinstance(criteria, dict):
-            for key, value in criteria.items():
-                if isinstance(value, dict) and "score" in value:
-                    result["scores"][key] = value["score"]
-                elif isinstance(value, (int, float)):
-                    result["scores"][key] = value
-    
-    # Extract total score
-    if "total" in parsed and parsed["total"] is not None:
-        result["total"] = float(parsed["total"]) if isinstance(parsed["total"], (int, float)) else None
-    elif "score" in parsed and isinstance(parsed["score"], (int, float)):
-        result["total"] = float(parsed["score"])
-    elif "overall_score" in parsed and isinstance(parsed["overall_score"], (int, float)):
-        result["total"] = float(parsed["overall_score"])
-    elif result["scores"]:
-        # Calculate average if we have individual scores but no total
-        values = [v for v in result["scores"].values() if isinstance(v, (int, float))]
-        if values:
-            result["total"] = sum(values) / len(values)
+
+    result["scores"] = _extract_named_scores(parsed)
+    result["total"] = _extract_total_score(parsed, result["scores"])
 
     # Some judge models return a summed total across criteria even though each
     # criterion is scored on a 0..1 scale. Normalize that back to a 0..1 mean.
