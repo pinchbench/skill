@@ -286,7 +286,36 @@ def _supports_truecolor() -> bool:
     return sys.stdout.isatty()
 
 
-def _get_git_version(script_dir: Path) -> str:
+def _get_benchmark_version(script_dir: Path) -> str:
+    try:
+        from importlib.metadata import version
+        v = version("pinchbench-skill")
+        if v:
+            return v
+    except Exception:
+        pass
+
+    version_file = script_dir / "BENCHMARK_VERSION"
+    if version_file.is_file():
+        try:
+            return version_file.read_text().strip()
+        except Exception:
+            pass
+
+    try:
+        result = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+            cwd=script_dir,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip().lstrip("v")
+    except (subprocess.SubprocessError, FileNotFoundError, OSError):
+        pass
+
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"],
@@ -296,11 +325,12 @@ def _get_git_version(script_dir: Path) -> str:
             check=False,
             cwd=script_dir,
         )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
     except (subprocess.SubprocessError, FileNotFoundError, OSError):
-        return ""
-    if result.returncode != 0:
-        return ""
-    return result.stdout.strip()
+        pass
+
+    return ""
 
 
 def _colorize_gradient(ascii_art: str) -> str:
@@ -627,7 +657,7 @@ def main():
         efficiency = _compute_efficiency_summary(task_entries, grades_by_task_id)
         partial = {
             "model": args.model,
-            "benchmark_version": _get_git_version(skill_root),
+            "benchmark_version": _get_benchmark_version(skill_root),
             "run_id": run_id,
             "timestamp": time.time(),
             "suite": args.suite,
@@ -783,7 +813,7 @@ def main():
         efficiency = _compute_efficiency_summary(task_entries, grades_by_task_id)
         aggregate = {
             "model": args.model,
-            "benchmark_version": _get_git_version(skill_root),
+            "benchmark_version": _get_benchmark_version(skill_root),
             "run_id": run_id,
             "timestamp": time.time(),
             "suite": args.suite,
