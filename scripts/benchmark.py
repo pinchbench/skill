@@ -303,6 +303,48 @@ def _get_git_version(script_dir: Path) -> str:
     return result.stdout.strip()
 
 
+def _get_benchmark_version(script_dir: Path) -> str:
+    """Get benchmark version with multiple fallback strategies.
+
+    Resolution order:
+    1. importlib.metadata (if package is installed via pip from git tag)
+    2. BENCHMARK_VERSION file (for cloned/downloaded usage)
+    3. Git tag via `git describe --tags` (fallback)
+    4. Git short hash (ultimate fallback)
+    """
+    import importlib.metadata
+
+    try:
+        return importlib.metadata.version("pinchbench-skill")
+    except Exception:
+        pass
+
+    version_file = script_dir / "BENCHMARK_VERSION"
+    if version_file.exists():
+        v = version_file.read_text().strip()
+        if v:
+            return v
+
+    try:
+        result = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+            cwd=script_dir,
+        )
+        if result.returncode == 0:
+            tag = result.stdout.strip()
+            if tag.startswith("v"):
+                return tag[1:]
+            return tag
+    except (subprocess.SubprocessError, FileNotFoundError, OSError):
+        pass
+
+    return _get_git_version(script_dir)
+
+
 def _colorize_gradient(ascii_art: str) -> str:
     if not _supports_truecolor():
         return ascii_art
@@ -627,7 +669,7 @@ def main():
         efficiency = _compute_efficiency_summary(task_entries, grades_by_task_id)
         partial = {
             "model": args.model,
-            "benchmark_version": _get_git_version(skill_root),
+            "benchmark_version": _get_benchmark_version(skill_root),
             "run_id": run_id,
             "timestamp": time.time(),
             "suite": args.suite,
@@ -783,7 +825,7 @@ def main():
         efficiency = _compute_efficiency_summary(task_entries, grades_by_task_id)
         aggregate = {
             "model": args.model,
-            "benchmark_version": _get_git_version(skill_root),
+            "benchmark_version": _get_benchmark_version(skill_root),
             "run_id": run_id,
             "timestamp": time.time(),
             "suite": args.suite,
