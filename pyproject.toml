@@ -1,6 +1,9 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm>=8"]
+
 [project]
 name = "pinchbench-skill"
-version = "0.1.0"
+dynamic = ["version"]
 description = "PinchBench - OpenClaw Agent Benchmarking System"
 readme = "SKILL.md"
 requires-python = ">=3.10"
@@ -34,3 +37,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+
+[tool.setuptools_scm]
+fallback_version = "0.1.0"
+version_file = "BENCHMARK_VERSION"
