@@ -98,7 +98,8 @@ def grade(transcript: list, workspace_path: str) -> dict:
             for item in msg.get("content", []):
                 if item.get("type") == "toolCall":
                     tool_name = item.get("name", "")
-                    params = item.get("params", {})
+                    # Support both "params" (Cursor/Windsurf) and "arguments" (OpenClaw/Claude Code)
+                    params = item.get("params", item.get("arguments", {}))
                     if tool_name.lower() in ["read_file", "readfile", "read"]:
                         # Support multiple param formats across different agents:
                         # - files: ["config.json"] (Cursor, Windsurf)
