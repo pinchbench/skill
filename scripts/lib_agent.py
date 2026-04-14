@@ -7,6 +7,8 @@ from __future__ import annotations
 import json
 import logging
 import os
+import platform
+import stat
 import subprocess
 import time
 from pathlib import Path
@@ -14,9 +16,12 @@ from typing import Any, Dict, List, Optional
 from urllib import error, request
 
 from lib_tasks import Task
+from lib_fws import is_fws_task, fws_available, start_fws, stop_fws
 
 
 logger = logging.getLogger(__name__)
+
+USE_SHELL = platform.system() == "Windows"
 
 
 class ModelValidationError(Exception):
@@ -25,7 +30,8 @@ class ModelValidationError(Exception):
     pass
 
 
-MAX_OPENCLAW_MESSAGE_CHARS = int(os.environ.get("PINCHBENCH_MAX_MSG_CHARS", "4000"))
+MAX_OPENCLAW_MESSAGE_CHARS = int(os.environ.get("PINCHBENCH_MAX_MSG_CHARS", "8000"))
+JUDGE_MAX_MSG_CHARS = int(os.environ.get("PINCHBENCH_JUDGE_MAX_MSG_CHARS", "3000"))
 
 
 def _coerce_subprocess_output(value: Any) -> str:
@@ -270,6 +276,7 @@ def _get_agent_workspace(agent_id: str) -> Path | None:
             capture_output=True,
             text=True,
             check=False,
+            shell=USE_SHELL,
         )
         if list_result.returncode != 0:
             return None
@@ -298,11 +305,24 @@ def _get_agent_workspace(agent_id: str) -> Path | None:
         return None
 
 
-def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bool:
+def ensure_agent_exists(
+    agent_id: str,
+    model_id: str,
+    workspace_dir: Path,
+    *,
+    base_url: str | None = None,
+    api_key: str | None = None,
+) -> bool:
     """Ensure the OpenClaw agent exists with the correct workspace.
 
     If the agent already exists but points to a different workspace, it is
     deleted and recreated so that the new workspace takes effect.
+
+    When *base_url* is provided, a custom OpenAI-compatible provider is
+    configured in the agent's ``models.json`` instead of relying on
+    OpenRouter.  *api_key* defaults to ``${OPENAI_API_KEY}`` (resolved by
+    OpenClaw at runtime) if not given.
+
     Returns True if the agent was (re)created.
     """
     workspace_dir.mkdir(parents=True, exist_ok=True)
@@ -313,6 +333,7 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
             capture_output=True,
             text=True,
             check=False,
+            shell=USE_SHELL,
         )
     except FileNotFoundError:
         logger.error("openclaw CLI not found while listing agents")
@@ -355,6 +376,7 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
                 capture_output=True,
                 text=True,
                 check=False,
+            shell=USE_SHELL,
             )
 
     logger.info("Creating OpenClaw agent %s", agent_id)
@@ -374,6 +396,7 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
             capture_output=True,
             text=True,
             check=False,
+            shell=USE_SHELL,
         )
     except FileNotFoundError:
         logger.error("openclaw CLI not found while creating agent")
@@ -383,6 +406,81 @@ def ensure_agent_exists(agent_id: str, model_id: str, workspace_dir: Path) -> bo
         logger.warning(
             "Agent creation returned %s: %s", create_result.returncode, create_result.stderr
         )
+
+    # Configure models.json for the bench agent
+    bench_agent_dir = _get_agent_store_dir(agent_id) / "agent"
+    bench_agent_dir.mkdir(parents=True, exist_ok=True)
+    bench_models = bench_agent_dir / "models.json"
+    main_models = Path.home() / ".openclaw" / "agents" / "main" / "agent" / "models.json"
+
+    if base_url:
+        # Custom OpenAI-compatible endpoint — build a provider entry
+        data: dict[str, Any] = {}
+        if main_models.exists():
+            try:
+                data = json.loads(main_models.read_text("utf-8-sig"))
+            except (json.JSONDecodeError, OSError):
+                data = {}
+
+        key_ref = api_key if api_key else "${OPENAI_API_KEY}"
+        providers = data.setdefault("models", {}).setdefault("providers", {})
+        data["models"]["mode"] = "merge"
+        providers["custom"] = {
+            "baseUrl": base_url,
+            "apiKey": key_ref,
+            "api": "openai-completions",
+            "models": [
+                {
+                    "id": model_id,
+                    "name": model_id,
+                    "reasoning": False,
+                    "input": ["text"],
+                    "contextWindow": 200000,
+                    "maxTokens": 8192,
+                }
+            ],
+        }
+        data["defaultProvider"] = "custom"
+        data["defaultModel"] = model_id
+        bench_models.write_text(json.dumps(data, indent=2, ensure_ascii=False), "utf-8")
+        logger.info(
+            "Configured custom provider (%s) with model %s for agent %s",
+            base_url,
+            model_id,
+            agent_id,
+        )
+    elif main_models.exists():
+        # Standard OpenRouter flow — copy main's models.json and set defaults
+        import shutil as _shutil
+        _shutil.copy2(main_models, bench_models)
+        if "/" in model_id:
+            provider_name, model_name = model_id.split("/", 1)
+            try:
+                raw = bench_models.read_text("utf-8-sig")
+                data = json.loads(raw)
+                data["defaultProvider"] = provider_name
+                data["defaultModel"] = model_name
+                bench_models.write_text(
+                    json.dumps(data, indent=2, ensure_ascii=False), "utf-8"
+                )
+                logger.info(
+                    "Set bench agent default model to %s / %s", provider_name, model_name
+                )
+            except Exception as exc:
+                logger.warning("Failed to set default model in bench models.json: %s", exc)
+        logger.info("Copied main agent models.json to bench agent %s", agent_id)
+
+    # Delete sessions.json so OpenClaw picks up the new defaultProvider/defaultModel
+    # instead of reusing a cached session entry that still points to an old model.
+    bench_sessions_dir = _get_agent_store_dir(agent_id) / "sessions"
+    sessions_store = bench_sessions_dir / "sessions.json"
+    if sessions_store.exists():
+        try:
+            sessions_store.unlink()
+            logger.info("Deleted stale sessions.json for bench agent %s", agent_id)
+        except OSError as exc:
+            logger.warning("Failed to delete sessions.json: %s", exc)
+
     return True
 
 
@@ -424,11 +522,26 @@ def prepare_task_workspace(skill_dir: Path, run_id: str, task: Task, agent_id: s
         logger.warning("Could not find agent workspace, using fallback")
         workspace = Path(f"/tmp/pinchbench/{run_id}/{task.task_id}")
 
-    # Clear workspace before each task to prevent stale files from prior tasks
-    # from contaminating the agent's context.
+    _BOOTSTRAP_FILES = ["SOUL.md", "BOOTSTRAP.md", "USER.md", "IDENTITY.md", "HEARTBEAT.md", "TOOLS.md"]
+
+    def _remove_readonly(func, path, _):
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except OSError:
+            pass
+
+    saved_bootstrap: dict[str, bytes] = {}
     if workspace.exists():
-        shutil.rmtree(workspace)
+        for fname in _BOOTSTRAP_FILES:
+            fpath = workspace / fname
+            if fpath.exists():
+                saved_bootstrap[fname] = fpath.read_bytes()
+        shutil.rmtree(workspace, onerror=_remove_readonly)
     workspace.mkdir(parents=True, exist_ok=True)
+
+    for fname, content in saved_bootstrap.items():
+        (workspace / fname).write_bytes(content)
 
     for file_spec in task.workspace_files:
         if "content" in file_spec:
@@ -446,17 +559,6 @@ def prepare_task_workspace(skill_dir: Path, run_id: str, task: Task, agent_id: s
             logger.error("Workspace file not found: %s", source)
             raise
 
-    # Remove bootstrap files that would trigger the onboarding flow
-    # These interfere with benchmark tasks
-    for bootstrap_file in ["BOOTSTRAP.md", "SOUL.md", "USER.md", "IDENTITY.md"]:
-        bootstrap_path = workspace / bootstrap_file
-        if bootstrap_path.exists():
-            try:
-                bootstrap_path.unlink()
-                logger.info("Removed bootstrap file: %s", bootstrap_file)
-            except OSError as exc:
-                logger.warning("Failed to remove %s: %s", bootstrap_file, exc)
-
     # Copy skills from main workspace to benchmark workspace
     # This enables benchmark agents to use installed skills like nano-pdf
     main_skills_dir = Path.home() / ".openclaw" / "workspace" / "skills"
@@ -470,7 +572,7 @@ def prepare_task_workspace(skill_dir: Path, run_id: str, task: Task, agent_id: s
                 import shutil
 
                 if dest_skill_dir.exists():
-                    shutil.rmtree(dest_skill_dir)
+                    shutil.rmtree(dest_skill_dir, onerror=_remove_readonly)
                 shutil.copytree(skill_dir_src, dest_skill_dir)
                 logger.info("Copied skill to benchmark workspace: %s", skill_dir_src.name)
 
@@ -531,8 +633,15 @@ def _resolve_session_id_from_store(agent_id: str) -> str | None:
     return None
 
 
-def _find_transcript_path_from_sessions_store(agent_id: str) -> Optional[Path]:
-    """Best-effort transcript path resolution from sessions.json payload values."""
+def _find_transcript_path_from_sessions_store(
+    agent_id: str, started_at: float = 0.0, tolerance_seconds: float = 5.0
+) -> Optional[Path]:
+    """Best-effort transcript path resolution from sessions.json payload values.
+
+    Only returns paths whose mtime is >= started_at - tolerance_seconds so that
+    a stale session written by a previous task's async tail (after its transcript
+    was already archived) is never mistaken for the current task's session.
+    """
     agent_dir = _get_agent_store_dir(agent_id)
     sessions_store = agent_dir / "sessions" / "sessions.json"
     if not sessions_store.exists():
@@ -556,13 +665,14 @@ def _find_transcript_path_from_sessions_store(agent_id: str) -> Optional[Path]:
 
     suffixes = (".jsonl", ".ndjson")
     session_root = agent_dir / "sessions"
+    min_mtime = started_at - tolerance_seconds
     for value in _iter_strings(payload):
         if not value.endswith(suffixes):
             continue
         candidate = Path(value)
         if not candidate.is_absolute():
             candidate = session_root / value
-        if candidate.exists():
+        if candidate.exists() and candidate.stat().st_mtime >= min_mtime:
             return candidate
     return None
 
@@ -582,7 +692,9 @@ def _find_recent_session_path(agent_dir: Path, started_at: float) -> Path | None
     return max(pool, key=lambda path: path.stat().st_mtime)
 
 
-def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[Dict[str, Any]]:
+def _load_transcript(
+    agent_id: str, session_id: str, started_at: float
+) -> tuple[List[Dict[str, Any]], Optional[Path]]:
     agent_dir = _get_agent_store_dir(agent_id)
     transcript_path = None
 
@@ -616,7 +728,7 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
                 break
 
         # 1b. Parse transcript-like paths from sessions.json values
-        candidate_from_store = _find_transcript_path_from_sessions_store(agent_id)
+        candidate_from_store = _find_transcript_path_from_sessions_store(agent_id, started_at)
         if candidate_from_store is not None:
             transcript_path = candidate_from_store
             logger.info(
@@ -677,7 +789,7 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
                 "Transcript not found — sessions dir does not exist: %s",
                 sessions_dir,
             )
-        return []
+        return [], None
 
     transcript: List[Dict[str, Any]] = []
     for line in transcript_path.read_text(encoding="utf-8").splitlines():
@@ -688,7 +800,7 @@ def _load_transcript(agent_id: str, session_id: str, started_at: float) -> List[
         except json.JSONDecodeError as exc:
             logger.warning("Failed to parse transcript line: %s", exc)
             transcript.append({"raw": line, "parse_error": str(exc)})
-    return transcript
+    return transcript, transcript_path
 
 
 def _extract_usage_from_transcript(transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -730,6 +842,7 @@ def execute_openclaw_task(
     run_id: str,
     timeout_multiplier: float,
     skill_dir: Path,
+    output_dir: Optional[Path] = None,
     verbose: bool = False,
     thinking_level: str | None = None,
 ) -> Dict[str, Any]:
@@ -746,6 +859,17 @@ def execute_openclaw_task(
     # Clean up previous session transcripts so we can reliably find this task's
     # transcript (OpenClaw uses its own UUID-based naming, not our session ID).
     cleanup_agent_sessions(agent_id)
+
+    # Start fws server for GWS tasks
+    fws_env = None
+    if is_fws_task(task.frontmatter):
+        if not fws_available():
+            logger.warning("⚠️ Task %s requires fws but it's not installed (npm install -g @juppytt/fws)", task.task_id)
+        else:
+            fws_env = start_fws()
+
+    # Use --local for fws tasks so env vars propagate to the agent
+    use_local = fws_env is not None
 
     start_time = time.time()
     workspace = prepare_task_workspace(skill_dir, run_id, task, agent_id)
@@ -790,6 +914,8 @@ def execute_openclaw_task(
                 ]
                 if thinking_level:
                     cmd.extend(["--thinking", thinking_level])
+                if use_local:
+                    cmd.insert(2, "--local")
                 result = subprocess.run(
                     cmd,
                     capture_output=True,
@@ -797,6 +923,7 @@ def execute_openclaw_task(
                     cwd=str(workspace),
                     timeout=remaining,
                     check=False,
+                    shell=USE_SHELL,
                 )
                 stdout += result.stdout
                 stderr += result.stderr
@@ -826,6 +953,8 @@ def execute_openclaw_task(
             ]
             if thinking_level:
                 cmd.extend(["--thinking", thinking_level])
+            if use_local:
+                cmd.insert(2, "--local")
             result = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -833,6 +962,7 @@ def execute_openclaw_task(
                 cwd=str(workspace),
                 timeout=timeout_seconds,
                 check=False,
+                shell=USE_SHELL,
             )
             stdout = result.stdout
             stderr = result.stderr
@@ -844,9 +974,20 @@ def execute_openclaw_task(
         except FileNotFoundError as exc:
             stderr = f"openclaw command not found: {exc}"
 
-    transcript = _load_transcript(agent_id, session_id, start_time)
+    transcript, transcript_path = _load_transcript(agent_id, session_id, start_time)
     usage = _extract_usage_from_transcript(transcript)
     execution_time = time.time() - start_time
+
+    # Archive the raw transcript JSONL before cleanup_agent_sessions deletes it
+    if transcript_path and output_dir:
+        import shutil as _shutil
+        output_dir.mkdir(parents=True, exist_ok=True)
+        archive_dest = output_dir / f"{task.task_id}.jsonl"
+        try:
+            _shutil.copy2(transcript_path, archive_dest)
+            logger.info("Archived transcript to %s", archive_dest)
+        except OSError as exc:
+            logger.warning("Failed to archive transcript: %s", exc)
 
     status = "success"
     if timed_out:
@@ -894,6 +1035,10 @@ def execute_openclaw_task(
                     except OSError:
                         logger.info("      %s", f.relative_to(workspace))
 
+    # Stop fws mock server if we started it
+    if fws_env is not None:
+        stop_fws(fws_env)
+
     return {
         "agent_id": agent_id,
         "task_id": task.task_id,
@@ -919,9 +1064,18 @@ def run_openclaw_prompt(
     thinking_level: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Run a single OpenClaw prompt for helper agents like the judge."""
-    # Clean up previous session transcripts so we can reliably find this
-    # prompt's transcript (OpenClaw uses its own UUID-based naming).
     cleanup_agent_sessions(agent_id)
+
+    agent_workspace = _get_agent_workspace(agent_id)
+    if agent_workspace and agent_workspace.exists():
+        for bootstrap_file in ["BOOTSTRAP.md", "SOUL.md", "USER.md", "IDENTITY.md", "HEARTBEAT.md"]:
+            bp = agent_workspace / bootstrap_file
+            if bp.exists():
+                try:
+                    bp.unlink()
+                    logger.debug("Removed bootstrap file from judge workspace: %s", bootstrap_file)
+                except OSError as exc:
+                    logger.warning("Failed to remove bootstrap file %s: %s", bootstrap_file, exc)
 
     start_time = time.time()
     workspace.mkdir(parents=True, exist_ok=True)
@@ -932,8 +1086,8 @@ def run_openclaw_prompt(
     timed_out = False
 
     chunks = [
-        prompt[i : i + MAX_OPENCLAW_MESSAGE_CHARS]
-        for i in range(0, max(1, len(prompt)), MAX_OPENCLAW_MESSAGE_CHARS)
+        prompt[i : i + JUDGE_MAX_MSG_CHARS]
+        for i in range(0, max(1, len(prompt)), JUDGE_MAX_MSG_CHARS)
     ]
     if len(chunks) > 1:
         total_chunks = len(chunks)
@@ -961,15 +1115,21 @@ def run_openclaw_prompt(
             timed_out = True
             break
         try:
+            openclaw_path = os.environ.get("OPENCLAW_PATH", "openclaw")
+            send_chunk = (
+                chunk.replace("\r\n", "\\n").replace("\n", "\\n").replace("\r", "\\n")
+                if USE_SHELL
+                else chunk
+            )
             cmd = [
-                "openclaw",
+                openclaw_path,
                 "agent",
                 "--agent",
                 agent_id,
                 "--session-id",
                 session_id,
                 "--message",
-                chunk,
+                send_chunk,
             ]
             if thinking_level:
                 cmd.extend(["--thinking", thinking_level])
@@ -980,6 +1140,7 @@ def run_openclaw_prompt(
                 cwd=str(workspace),
                 timeout=remaining,
                 check=False,
+                shell=USE_SHELL,
             )
             stdout += result.stdout
             stderr += result.stderr
@@ -995,7 +1156,7 @@ def run_openclaw_prompt(
             stderr += f"openclaw command not found: {exc}"
             break
 
-    transcript = _load_transcript(agent_id, session_id, start_time)
+    transcript, _ = _load_transcript(agent_id, session_id, start_time)
     execution_time = time.time() - start_time
 
     status = "success"
@@ -1019,3 +1180,179 @@ def run_openclaw_prompt(
         "stdout": stdout,
         "stderr": stderr,
     }
+
+
+_JUDGE_SYSTEM_MSG = (
+    "You are a strict grading function. "
+    "Respond with ONLY a JSON object, no prose, no markdown fences, no extra text."
+)
+
+
+def call_judge_api(
+    *,
+    prompt: str,
+    model: str,
+    timeout_seconds: float = 120.0,
+) -> Dict[str, Any]:
+    """Call a judge model directly via API, bypassing OpenClaw.
+
+    Dispatches based on model prefix:
+      - openrouter/* -> OpenRouter chat completions API
+      - anthropic/*  -> Anthropic Messages API
+      - openai/*     -> OpenAI chat completions API
+      - claude       -> headless Claude CLI (claude -p)
+
+    Returns {"status": str, "text": str, "error"?: str}.
+    """
+    if model == "claude" or model.startswith("claude:"):
+        return _judge_via_claude_cli(prompt, model, timeout_seconds)
+    if model.startswith("anthropic/"):
+        return _judge_via_anthropic(prompt, model, timeout_seconds)
+    if model.startswith("openai/"):
+        return _judge_via_openai(prompt, model, timeout_seconds)
+    # Default: OpenRouter (handles openrouter/ prefix and bare provider/model)
+    return _judge_via_openrouter(prompt, model, timeout_seconds)
+
+
+def _judge_via_openai_compat(
+    prompt: str,
+    api_model: str,
+    endpoint: str,
+    api_key: str,
+    timeout_seconds: float,
+    extra_headers: Optional[Dict[str, str]] = None,
+) -> Dict[str, Any]:
+    """Shared implementation for OpenAI-compatible chat completions APIs."""
+    payload = json.dumps({
+        "model": api_model,
+        "messages": [
+            {"role": "system", "content": _JUDGE_SYSTEM_MSG},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.0,
+        "max_completion_tokens": 2048,
+    }).encode("utf-8")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    if extra_headers:
+        headers.update(extra_headers)
+
+    req = request.Request(endpoint, data=payload, headers=headers, method="POST")
+    try:
+        with request.urlopen(req, timeout=timeout_seconds) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except error.HTTPError as exc:
+        body = ""
+        try:
+            body = exc.read().decode("utf-8", errors="replace")[:500]
+        except Exception:
+            pass
+        logger.error("Judge API error (%s): %s", exc.code, body)
+        return {"status": "error", "text": "", "error": f"HTTP {exc.code}: {body}"}
+    except error.URLError as exc:
+        logger.error("Judge network error: %s", exc)
+        return {"status": "error", "text": "", "error": str(exc)}
+    except TimeoutError:
+        return {"status": "timeout", "text": "", "error": "Request timed out"}
+
+    choices = data.get("choices", [])
+    if not choices:
+        return {"status": "error", "text": "", "error": "No choices in response"}
+    text = choices[0].get("message", {}).get("content", "")
+    return {"status": "success", "text": text}
+
+
+def _judge_via_openrouter(prompt: str, model: str, timeout_seconds: float) -> Dict[str, Any]:
+    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if not api_key:
+        return {"status": "error", "text": "", "error": "OPENROUTER_API_KEY not set"}
+    bare_model = model.removeprefix("openrouter/")
+    return _judge_via_openai_compat(
+        prompt, bare_model,
+        "https://openrouter.ai/api/v1/chat/completions",
+        api_key, timeout_seconds,
+        extra_headers={"HTTP-Referer": "https://pinchbench.com", "X-Title": "PinchBench-Judge"},
+    )
+
+
+def _judge_via_openai(prompt: str, model: str, timeout_seconds: float) -> Dict[str, Any]:
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return {"status": "error", "text": "", "error": "OPENAI_API_KEY not set"}
+    bare_model = model.removeprefix("openai/")
+    return _judge_via_openai_compat(
+        prompt, bare_model,
+        "https://api.openai.com/v1/chat/completions",
+        api_key, timeout_seconds,
+    )
+
+
+def _judge_via_anthropic(prompt: str, model: str, timeout_seconds: float) -> Dict[str, Any]:
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        return {"status": "error", "text": "", "error": "ANTHROPIC_API_KEY not set"}
+    bare_model = model.removeprefix("anthropic/")
+    payload = json.dumps({
+        "model": bare_model,
+        "max_tokens": 2048,
+        "temperature": 0.0,
+        "system": _JUDGE_SYSTEM_MSG,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode("utf-8")
+    headers = {
+        "x-api-key": api_key,
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01",
+    }
+    req = request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload, headers=headers, method="POST",
+    )
+    try:
+        with request.urlopen(req, timeout=timeout_seconds) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except error.HTTPError as exc:
+        body = ""
+        try:
+            body = exc.read().decode("utf-8", errors="replace")[:500]
+        except Exception:
+            pass
+        logger.error("Anthropic judge API error (%s): %s", exc.code, body)
+        return {"status": "error", "text": "", "error": f"HTTP {exc.code}: {body}"}
+    except error.URLError as exc:
+        logger.error("Anthropic judge network error: %s", exc)
+        return {"status": "error", "text": "", "error": str(exc)}
+    except TimeoutError:
+        return {"status": "timeout", "text": "", "error": "Request timed out"}
+
+    content = data.get("content", [])
+    text = "".join(block.get("text", "") for block in content if block.get("type") == "text")
+    return {"status": "success", "text": text}
+
+
+def _judge_via_claude_cli(prompt: str, model: str, timeout_seconds: float) -> Dict[str, Any]:
+    """Use headless Claude CLI (claude -p) as judge."""
+    cmd: List[str] = ["claude", "-p"]
+    # Support "claude:model-name" to pass --model
+    if ":" in model:
+        _, cli_model = model.split(":", 1)
+        cmd.extend(["--model", cli_model])
+    try:
+        result = subprocess.run(
+            cmd,
+            input=f"{_JUDGE_SYSTEM_MSG}\n\n{prompt}",
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds,
+            check=False,
+        )
+    except FileNotFoundError:
+        return {"status": "error", "text": "", "error": "claude CLI not found"}
+    except subprocess.TimeoutExpired:
+        return {"status": "timeout", "text": "", "error": "claude -p timed out"}
+    if result.returncode != 0:
+        return {"status": "error", "text": "", "error": f"claude exit {result.returncode}: {result.stderr[:300]}"}
+    return {"status": "success", "text": result.stdout}

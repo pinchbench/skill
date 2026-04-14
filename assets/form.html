@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  .container { background: #fff; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 32px; width: 100%; max-width: 480px; }
+  h1 { font-size: 22px; margin-bottom: 8px; color: #1a1a1a; }
+  .progress-bar { display: flex; gap: 8px; margin-bottom: 24px; }
+  .progress-step { flex: 1; height: 4px; background: #e0e0e0; border-radius: 2px; transition: background 0.3s; }
+  .progress-step.active { background: #2563eb; }
+  .step { display: none; }
+  .step.active { display: block; }
+  label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 6px; margin-top: 16px; }
+  input, select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; outline: none; transition: border 0.2s; }
+  input:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+  .error-msg { color: #dc2626; font-size: 12px; margin-top: 4px; display: none; }
+  .error-msg.visible { display: block; }
+  .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+  .btn-next, .btn-submit { flex: 1; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+  .btn-next:hover, .btn-submit:hover { background: #1d4ed8; }
+  .btn-back { flex: 1; padding: 12px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s; }
+  .btn-back:hover { background: #e5e7eb; }
+  .review-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+  .review-label { font-size: 14px; color: #6b7280; }
+  .review-value { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  #success-panel { display: none; text-align: center; padding: 32px 0; }
+  .success-msg h2 { color: #16a34a; font-size: 20px; margin-bottom: 8px; }
+  .success-msg p { color: #4b5563; font-size: 15px; }
+  #submission-id { color: #2563eb; }
+</style>
+</head>
+<body>
+  <div class="container" data-testid="form-container">
+    <h1>Create Account</h1>
+
+    <div class="progress-bar" data-testid="progress-bar">
+      <div class="progress-step active" id="prog-1"></div>
+      <div class="progress-step" id="prog-2"></div>
+      <div class="progress-step" id="prog-3"></div>
+    </div>
+
+    <!-- Step 1: Personal Info -->
+    <div class="step active" id="step-1" data-testid="step-1">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" name="fullname" placeholder="John Doe" data-testid="fullname">
+      <div class="error-msg" id="err-fullname">Full name is required</div>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="john@example.com" data-testid="email">
+      <div class="error-msg" id="err-email">Please enter a valid email address</div>
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="+1 555-123-4567" data-testid="phone">
+      <div class="error-msg" id="err-phone">Phone number is required</div>
+
+      <div class="btn-row">
+        <button class="btn-next" onclick="goToStep(2)" data-testid="next-1">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Address -->
+    <div class="step" id="step-2" data-testid="step-2">
+      <label for="street">Street Address</label>
+      <input type="text" id="street" name="street" placeholder="123 Main St" data-testid="street">
+      <div class="error-msg" id="err-street">Street address is required</div>
+
+      <label for="city">City</label>
+      <input type="text" id="city" name="city" placeholder="San Francisco" data-testid="city">
+      <div class="error-msg" id="err-city">City is required</div>
+
+      <label for="state">State</label>
+      <select id="state" name="state" data-testid="state">
+        <option value="">Select State</option>
+        <option value="CA">California</option>
+        <option value="NY">New York</option>
+        <option value="TX">Texas</option>
+        <option value="FL">Florida</option>
+        <option value="WA">Washington</option>
+      </select>
+      <div class="error-msg" id="err-state">Please select a state</div>
+
+      <label for="zip">ZIP Code</label>
+      <input type="text" id="zip" name="zip" placeholder="94102" maxlength="5" data-testid="zip">
+      <div class="error-msg" id="err-zip">Please enter a valid 5-digit ZIP code</div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(1)" data-testid="back-2">Back</button>
+        <button class="btn-next" onclick="goToStep(3)" data-testid="next-2">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Review & Submit -->
+    <div class="step" id="step-3" data-testid="step-3">
+      <div class="review-item"><div class="review-label">Full Name</div><div class="review-value" id="review-fullname" data-testid="review-fullname"></div></div>
+      <div class="review-item"><div class="review-label">Email</div><div class="review-value" id="review-email" data-testid="review-email"></div></div>
+      <div class="review-item"><div class="review-label">Phone</div><div class="review-value" id="review-phone" data-testid="review-phone"></div></div>
+      <div class="review-item"><div class="review-label">Address</div><div class="review-value" id="review-address" data-testid="review-address"></div></div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(2)" data-testid="back-3">Back</button>
+        <button class="btn-submit" onclick="submitForm()" data-testid="submit">Submit Registration</button>
+      </div>
+    </div>
+
+    <!-- Success Panel -->
+    <div id="success-panel" data-testid="success-panel">
+      <div class="success-msg">
+        <h2>Registration Complete!</h2>
+        <p>Thank you for registering. Your submission ID is: <strong id="submission-id" data-testid="submission-id"></strong></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+
+    function validateStep1() {
+      let valid = true;
+      const fullname = document.getElementById('fullname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!fullname) { document.getElementById('err-fullname').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-fullname').classList.remove('visible'); }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) { document.getElementById('err-email').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-email').classList.remove('visible'); }
+
+      if (!phone) { document.getElementById('err-phone').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-phone').classList.remove('visible'); }
+
+      return valid;
+    }
+
+    function validateStep2() {
+      let valid = true;
+      const street = document.getElementById('street').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const state = document.getElementById('state').value;
+      const zip = document.getElementById('zip').value.trim();
+
+      if (!street) { document.getElementById('err-street').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-street').classList.remove('visible'); }
+
+      if (!city) { document.getElementById('err-city').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-city').classList.remove('visible'); }
+
+      if (!state) { document.getElementById('err-state').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-state').classList.remove('visible'); }
+
+      const zipRegex = /^\d{5}$/;
+      if (!zipRegex.test(zip)) { document.getElementById('err-zip').classList.add('visible'); valid = false; }
+      else { document.getElementById('err-zip').classList.remove('visible'); }
+
+      return valid;
+    }
+
+    function populateReview() {
+      document.getElementById('review-fullname').textContent = document.getElementById('fullname').value;
+      document.getElementById('review-email').textContent = document.getElementById('email').value;
+      document.getElementById('review-phone').textContent = document.getElementById('phone').value;
+      const street = document.getElementById('street').value;
+      const city = document.getElementById('city').value;
+      const state = document.getElementById('state').value;
+      const zip = document.getElementById('zip').value;
+      document.getElementById('review-address').textContent = `${street}, ${city}, ${state} ${zip}`;
+    }
+
+    function goToStep(step) {
+      if (step === 2 && currentStep === 1 && !validateStep1()) return;
+      if (step === 3 && currentStep === 2 && !validateStep2()) return;
+      if (step === 3) populateReview();
+
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      document.getElementById(`step-${step}`).classList.add('active');
+
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`prog-${i}`).classList.toggle('active', i <= step);
+      }
+
+      currentStep = step;
+    }
+
+    function submitForm() {
+      const id = 'REG-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+      document.getElementById('submission-id').textContent = id;
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      document.getElementById('success-panel').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

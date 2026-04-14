@@ -3,7 +3,7 @@ name: pinchbench
 description: Run PinchBench benchmarks to evaluate OpenClaw agent performance across real-world tasks. Use when testing model capabilities, comparing models, submitting benchmark results to the leaderboard, or checking how well your OpenClaw setup handles calendar, email, research, coding, and multi-step workflows.
 metadata:
   author: pinchbench
-  version: "1.0.0"
+  version: "2.0.0-rc1"
   homepage: https://pinchbench.com
   repository: https://github.com/pinchbench/skill
 ---
@@ -30,7 +30,7 @@ uv run benchmark.py --model anthropic/claude-sonnet-4
 uv run benchmark.py --model anthropic/claude-sonnet-4 --suite automated-only
 
 # Run specific tasks
-uv run benchmark.py --model anthropic/claude-sonnet-4 --suite task_01_calendar,task_02_stock
+uv run benchmark.py --model anthropic/claude-sonnet-4 --suite task_calendar,task_stock
 
 # Skip uploading results
 uv run benchmark.py --model anthropic/claude-sonnet-4 --no-upload
@@ -40,29 +40,29 @@ uv run benchmark.py --model anthropic/claude-sonnet-4 --no-upload
 
 | Task | Category | Description |
 |------|----------|-------------|
-| `task_00_sanity` | Basic | Verify agent works |
-| `task_01_calendar` | Productivity | Calendar event creation |
-| `task_02_stock` | Research | Stock price lookup |
-| `task_03_blog` | Writing | Blog post creation |
-| `task_04_weather` | Coding | Weather script |
-| `task_05_summary` | Analysis | Document summarization |
-| `task_06_events` | Research | Conference research |
-| `task_07_email` | Writing | Email drafting |
-| `task_08_memory` | Memory | Context retrieval |
-| `task_09_files` | Files | File structure creation |
-| `task_10_workflow` | Integration | Multi-step API workflow |
-| `task_11_clawdhub` | Skills | ClawHub interaction |
-| `task_12_skill_search` | Skills | Skill discovery |
-| `task_13_image_gen` | Creative | Image generation |
-| `task_14_humanizer` | Writing | Text humanization |
-| `task_15_daily_summary` | Productivity | Daily digest |
-| `task_16_email_triage` | Email | Inbox triage |
-| `task_17_email_search` | Email | Email search |
-| `task_18_market_research` | Research | Market analysis |
-| `task_19_spreadsheet_summary` | Analysis | Spreadsheet analysis |
-| `task_20_eli5_pdf_summary` | Analysis | PDF simplification |
-| `task_21_openclaw_comprehension` | Knowledge | OpenClaw docs comprehension |
-| `task_22_second_brain` | Memory | Knowledge management |
+| `task_sanity` | Basic | Verify agent works |
+| `task_calendar` | Productivity | Calendar event creation |
+| `task_stock` | Research | Stock price lookup |
+| `task_blog` | Writing | Blog post creation |
+| `task_weather` | Coding | Weather script |
+| `task_summary` | Analysis | Document summarization |
+| `task_events` | Research | Conference research |
+| `task_email` | Writing | Email drafting |
+| `task_memory` | Memory | Context retrieval |
+| `task_files` | Files | File structure creation |
+| `task_workflow` | Integration | Multi-step API workflow |
+| `task_clawdhub` | Skills | ClawHub interaction |
+| `task_skill_search` | Skills | Skill discovery |
+| `task_image_gen` | Creative | Image generation |
+| `task_humanizer` | Writing | Text humanization |
+| `task_daily_summary` | Productivity | Daily digest |
+| `task_email_triage` | Email | Inbox triage |
+| `task_email_search` | Email | Email search |
+| `task_market_research` | Research | Market analysis |
+| `task_spreadsheet_summary` | Analysis | Spreadsheet analysis |
+| `task_eli5_pdf_summary` | Analysis | PDF simplification |
+| `task_openclaw_comprehension` | Knowledge | OpenClaw docs comprehension |
+| `task_second_brain` | Memory | Knowledge management |
 
 ## Command Line Options
 

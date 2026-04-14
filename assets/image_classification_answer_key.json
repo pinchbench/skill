@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "description": "Ground-truth labels for obfuscated image classification fixtures. Do not copy this file into agent workspaces.",
+  "images": {
+    "img_70c33702334f.jpg": {
+      "label": "american football 7",
+      "original_filename": "american_football_7.jpg"
+    },
+    "img_5ce1bab1b00b.jpg": {
+      "label": "bacon cheeseburger",
+      "original_filename": "bacon-cheeseburger.jpg"
+    },
+    "img_98558f03c362.jpg": {
+      "label": "basketball 166",
+      "original_filename": "basketball_166.jpg"
+    },
+    "img_8a11b2cffaf6.jpg": {
+      "label": "bike",
+      "original_filename": "bike.jpg"
+    },
+    "img_b1ca4cf75e6b.jpg": {
+      "label": "book named milk and honey",
+      "original_filename": "book-named-milk-and-honey.jpg"
+    },
+    "img_cfe4eb222885.jpg": {
+      "label": "brad pitt",
+      "original_filename": "brad-pitt.jpg"
+    },
+    "img_81f76cb4bca9.jpg": {
+      "label": "broccoli",
+      "original_filename": "broccoli.jpg"
+    },
+    "img_7905c012bcdc.jpg": {
+      "label": "carrot",
+      "original_filename": "carrot.jpg"
+    },
+    "img_0438dbef9bd8.jpg": {
+      "label": "cheese plate",
+      "original_filename": "cheese-plate.jpg"
+    },
+    "img_e2f9cbc697da.jpg": {
+      "label": "chicken fingers",
+      "original_filename": "chicken-fingers.jpg"
+    },
+    "img_ddabd275f36a.jpg": {
+      "label": "crumpled receipt",
+      "original_filename": "crumpled-receipt.jpg"
+    },
+    "img_70ae51449190.jpg": {
+      "label": "cucumber",
+      "original_filename": "cucumber.jpg"
+    },
+    "img_2316488471f3.jpg": {
+      "label": "cup of coffee",
+      "original_filename": "cup-of-coffee.jpg"
+    },
+    "img_b592111f499a.jpg": {
+      "label": "dinner plate of food",
+      "original_filename": "dinner-plate-of-food.jpg"
+    },
+    "img_b7f1ccd7a31b.jpg": {
+      "label": "gardenias",
+      "original_filename": "gardenias.jpg"
+    },
+    "img_8f5cbd2c32b0.jpg": {
+      "label": "garlic bread",
+      "original_filename": "garlic-bread.jpg"
+    },
+    "img_40cb854f65f1.jpg": {
+      "label": "grilled cheese",
+      "original_filename": "grilled-cheese.jpg"
+    },
+    "img_623f47838303.jpg": {
+      "label": "hotdog",
+      "original_filename": "hotdog.jpg"
+    },
+    "img_e089ac444e36.jpg": {
+      "label": "hugh jackman",
+      "original_filename": "hugh-jackman.jpg"
+    },
+    "img_b50a090c2116.jpg": {
+      "label": "iced coffee",
+      "original_filename": "iced-coffee.jpg"
+    },
+    "img_0e5d267af744.jpg": {
+      "label": "iphone",
+      "original_filename": "iphone.jpg"
+    },
+    "img_8f0972252696.jpg": {
+      "label": "natalie portman",
+      "original_filename": "natalie-portman.jpg"
+    },
+    "img_44699f8602d4.jpg": {
+      "label": "omelette",
+      "original_filename": "omelette.jpg"
+    },
+    "img_c354b0b99504.png": {
+      "label": "pikachu",
+      "original_filename": "pikachu.png"
+    },
+    "img_eea5b2054ccf.jpg": {
+      "label": "pile of books",
+      "original_filename": "pile-of-books.jpg"
+    },
+    "img_850a0477789e.jpg": {
+      "label": "pizza 2",
+      "original_filename": "pizza-2.jpg"
+    },
+    "img_128030b75c71.jpg": {
+      "label": "pizza",
+      "original_filename": "pizza.jpg"
+    },
+    "img_f1523ff42b74.jpg": {
+      "label": "quesadilla",
+      "original_filename": "quesadilla.jpg"
+    },
+    "img_d8789bd8c097.jpg": {
+      "label": "scarlett johansson",
+      "original_filename": "scarlett-johansson.jpg"
+    },
+    "img_9202d59fe4ad.png": {
+      "label": "snorlax",
+      "original_filename": "snorlax.png"
+    },
+    "img_34c88a48f682.jpg": {
+      "label": "tulip",
+      "original_filename": "tulip.jpg"
+    }
+  }
+}

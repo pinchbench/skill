@@ -4,6 +4,7 @@
 
 [![Leaderboard](https://img.shields.io/badge/leaderboard-pinchbench.com-blue)](https://pinchbench.com)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+<!-- task-count-badge -->![Tasks](https://img.shields.io/badge/tasks-53-orange)<!-- /task-count-badge -->
 
 > **Note:** This repository contains the benchmark skill/tasks. It is NOT the source of official leaderboard results. To add models to the official results, modify [pinchbench/scripts/default-models.yml](https://github.com/pinchbench/scripts/blob/main/default-models.yml).
 
@@ -33,7 +34,7 @@ cd skill
 ./scripts/run.sh --model openrouter/anthropic/claude-sonnet-4
 
 # Or run specific tasks
-./scripts/run.sh --model openrouter/openai/gpt-4o --suite task_01_calendar,task_02_stock
+./scripts/run.sh --model openrouter/openai/gpt-4o --suite task_calendar,task_stock
 ```
 
 > **Note:** Model IDs must include their provider prefix (e.g. `openrouter/`, `anthropic/`). [OpenRouter](https://openrouter.ai) is the default provider used for routing.
@@ -46,7 +47,7 @@ cd skill
 
 ## What Gets Tested
 
-PinchBench includes 23 tasks across real-world categories:
+<!-- task-count-text -->PinchBench includes 53 tasks across real-world categories:<!-- /task-count-text -->
 
 | Category         | Tasks                                   | What's tested                            |
 | ---------------- | --------------------------------------- | ---------------------------------------- |
@@ -93,7 +94,7 @@ export PINCHBENCH_OFFICIAL_KEY=your_official_key
 | Flag                     | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
 | `--model MODEL`          | Model to test (e.g., `openrouter/anthropic/claude-sonnet-4`)                  |
-| `--judge MODEL`          | Judge model for LLM grading (default: `openrouter/anthropic/claude-opus-4.5`) |
+| `--judge MODEL`          | Judge model for LLM grading; uses direct API when set (see below)                 |
 | `--suite SUITE`          | `all`, `automated-only`, or comma-separated task IDs                          |
 | `--runs N`               | Number of runs per task for averaging                                         |
 | `--timeout-multiplier N` | Scale timeouts for slower models                                              |
@@ -125,6 +126,29 @@ Valid levels: `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, `adaptive`
 
 Results include a `thinking_aggregates` section with per-level statistics, and each task result includes the `thinking_level` used.
 
+### Judge
+
+By default (no `--judge` flag), the LLM judge runs as an OpenClaw agent session. When `--judge` is specified, it calls the model API directly instead, bypassing OpenClaw personality injection.
+
+```bash
+# Default: OpenClaw agent session (no --judge needed)
+./scripts/run.sh --model openrouter/anthropic/claude-sonnet-4
+
+# Direct API via OpenRouter
+./scripts/run.sh --model openai/gpt-4o --judge openrouter/anthropic/claude-sonnet-4-5
+
+# Direct API via Anthropic
+./scripts/run.sh --model openai/gpt-4o --judge anthropic/claude-sonnet-4-5-20250514
+
+# Direct API via OpenAI
+./scripts/run.sh --model openai/gpt-4o --judge openai/gpt-4o
+
+# Headless Claude CLI
+./scripts/run.sh --model openai/gpt-4o --judge claude
+```
+
+Required env vars: `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, or `OPENAI_API_KEY` depending on the judge model prefix.
+
 ## Contributing Tasks
 
 We welcome new tasks! Check out [`tasks/TASK_TEMPLATE.md`](tasks/TASK_TEMPLATE.md) for the format. Good tasks are:
@@ -134,11 +158,25 @@ We welcome new tasks! Check out [`tasks/TASK_TEMPLATE.md`](tasks/TASK_TEMPLATE.m
 - **Reproducible** — Same task should produce consistent grading
 - **Challenging** — Tests agent capabilities, not just LLM knowledge
 
+### Transcript Archive
+
+Session transcripts are automatically saved to `results/{run_id}_transcripts/` alongside the results JSON. Each task's full agent conversation is preserved as a JSONL file (e.g. `task_calendar.jsonl`) for post-run analysis.
+
 ## Links
 
 - **Leaderboard:** [pinchbench.com](https://pinchbench.com)
 - **OpenClaw:** [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw)
 - **Issues:** [github.com/pinchbench/skill/issues](https://github.com/pinchbench/skill/issues)
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=pinchbench%2Fskill&type=date&logscale=&legend=top-left">
+ <picture>
+ <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=pinchbench/skill&type=date&theme=dark&legend=top-left" />
+ <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=pinchbench/skill&type=date&legend=top-left" />
+ <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=pinchbench/skill&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ## License
 

@@ -1,0 +1,1000 @@
+[Thu Jun 09 06:07:04 2005] [notice] LDAP: Built with OpenLDAP LDAP SDK
+[Thu Jun 09 06:07:04 2005] [notice] LDAP: SSL support unavailable
+[Thu Jun 09 06:07:04 2005] [notice] suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
+[Thu Jun 09 06:07:05 2005] [notice] Digest: generating secret for digest authentication ...
+[Thu Jun 09 06:07:05 2005] [notice] Digest: done
+[Thu Jun 09 06:07:05 2005] [notice] LDAP: Built with OpenLDAP LDAP SDK
+[Thu Jun 09 06:07:05 2005] [notice] LDAP: SSL support unavailable
+[Thu Jun 09 06:07:05 2005] [error] env.createBean2(): Factory error creating channel.jni:jni ( channel.jni, jni)
+[Thu Jun 09 06:07:05 2005] [error] config.update(): Can't create channel.jni:jni
+[Thu Jun 09 06:07:05 2005] [error] env.createBean2(): Factory error creating vm: ( vm, )
+[Thu Jun 09 06:07:05 2005] [error] config.update(): Can't create vm:
+[Thu Jun 09 06:07:05 2005] [error] env.createBean2(): Factory error creating worker.jni:onStartup ( worker.jni, onStartup)
+[Thu Jun 09 06:07:05 2005] [error] config.update(): Can't create worker.jni:onStartup
+[Thu Jun 09 06:07:05 2005] [error] env.createBean2(): Factory error creating worker.jni:onShutdown ( worker.jni, onShutdown)
+[Thu Jun 09 06:07:05 2005] [error] config.update(): Can't create worker.jni:onShutdown
+[Thu Jun 09 06:07:16 2005] [notice] mod_python: Creating 32 session mutexes based on 150 max processes and 0 max threads.
+[Thu Jun 09 06:07:19 2005] [notice] mod_security/1.9dev2 configured
+[Thu Jun 09 06:07:19 2005] [notice] Apache/2.0.49 (Fedora) configured -- resuming normal operations
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2330 in scoreboard slot 0
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2337 in scoreboard slot 7
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2332 in scoreboard slot 2
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2331 in scoreboard slot 1
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2333 in scoreboard slot 3
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2335 in scoreboard slot 5
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2334 in scoreboard slot 4
+[Thu Jun 09 06:07:19 2005] [notice] jk2_init() Found child 2336 in scoreboard slot 6
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [error] mod_jk child init 1 0
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 06:07:20 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 07:11:21 2005] [error] [client 204.100.200.22] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 12:08:57 2005] [error] [client 207.203.80.15] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 12:17:49 2005] [error] [client 216.68.171.39] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 12:48:10 2005] [error] [client 24.158.204.7] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 13:59:36 2005] [error] [client 216.85.154.124] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 14:22:15 2005] [error] [client 219.136.165.149] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 14:40:51 2005] [error] [client 218.114.142.11] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 15:06:08 2005] [error] [client 211.74.182.199] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 16:31:58 2005] [error] [client 218.61.75.217] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 17:04:03 2005] [error] [client 12.32.56.253] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 18:55:10 2005] [error] [client 24.159.188.244] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 18:56:23 2005] [error] [client 222.76.16.61] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:31 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [notice] jk2_init() Found child 4056 in scoreboard slot 8
+[Thu Jun 09 19:23:32 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] [client 81.199.21.119] File does not exist: /var/www/html/sumthin
+[Thu Jun 09 19:23:32 2005] [error] jk2_init() Can't find child 4057 in scoreboard
+[Thu Jun 09 19:23:32 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 19:23:32 2005] [error] mod_jk child init 1 -2
+[Thu Jun 09 19:23:32 2005] [error] jk2_init() Can't find child 4058 in scoreboard
+[Thu Jun 09 19:23:32 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Thu Jun 09 19:23:32 2005] [error] mod_jk child init 1 -2
+[Thu Jun 09 19:52:05 2005] [error] [client 219.150.171.68] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 20:05:25 2005] [error] [client 60.180.218.105] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 20:30:02 2005] [error] [client 12.223.73.171] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 09 23:48:54 2005] [error] [client 143.127.131.4] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 00:36:44 2005] [error] [client 65.106.172.142] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 00:57:00 2005] [error] [client 222.166.160.169] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 01:23:50 2005] [error] [client 63.203.254.140] Invalid method in request get /scripts/.%252e/.%252e/winnt/system32/cmd.exe?/c+dir
+[Fri Jun 10 01:24:12 2005] [error] [client 213.61.135.6] Invalid method in request get /scripts/.%252e/.%252e/winnt/system32/cmd.exe?/c+dir
+[Fri Jun 10 01:24:32 2005] [error] [client 201.252.246.11] Invalid method in request get /scripts/.%252e/.%252e/winnt/system32/cmd.exe?/c+dir
+[Fri Jun 10 02:42:34 2005] [error] [client 221.211.123.40] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 02:45:13 2005] [error] [client 218.16.110.143] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 03:04:53 2005] [error] [client 61.187.179.247] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:39 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:42 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:37:42 2005] [error] [client 194.116.250.2] File does not exist: /var/www/html/sumthin
+[Fri Jun 10 03:40:25 2005] [error] [client 211.97.68.142] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 04:15:02 2005] [error] [client 62.221.237.83] Invalid method in request get /scripts/..%35c../winnt/system32/cmd.exe?/c+dir
+[Fri Jun 10 04:18:49 2005] [error] [client 61.4.64.180] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 10:45:05 2005] [error] [client 219.154.34.244] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 11:01:52 2005] [error] [client 66.201.171.199] File does not exist: /var/www/html/scripts/..%5c%5c..
+[Fri Jun 10 11:32:25 2005] [notice] LDAP: Built with OpenLDAP LDAP SDK
+[Fri Jun 10 11:32:26 2005] [notice] LDAP: SSL support unavailable
+[Fri Jun 10 11:32:26 2005] [notice] suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
+[Fri Jun 10 11:32:26 2005] [notice] Digest: generating secret for digest authentication ...
+[Fri Jun 10 11:32:26 2005] [notice] Digest: done
+[Fri Jun 10 11:32:26 2005] [notice] LDAP: Built with OpenLDAP LDAP SDK
+[Fri Jun 10 11:32:26 2005] [notice] LDAP: SSL support unavailable
+[Fri Jun 10 11:32:27 2005] [error] env.createBean2(): Factory error creating channel.jni:jni ( channel.jni, jni)
+[Fri Jun 10 11:32:27 2005] [error] config.update(): Can't create channel.jni:jni
+[Fri Jun 10 11:32:27 2005] [error] env.createBean2(): Factory error creating vm: ( vm, )
+[Fri Jun 10 11:32:27 2005] [error] config.update(): Can't create vm:
+[Fri Jun 10 11:32:27 2005] [error] env.createBean2(): Factory error creating worker.jni:onStartup ( worker.jni, onStartup)
+[Fri Jun 10 11:32:27 2005] [error] config.update(): Can't create worker.jni:onStartup
+[Fri Jun 10 11:32:27 2005] [error] env.createBean2(): Factory error creating worker.jni:onShutdown ( worker.jni, onShutdown)
+[Fri Jun 10 11:32:27 2005] [error] config.update(): Can't create worker.jni:onShutdown
+[Fri Jun 10 11:32:35 2005] [notice] mod_python: Creating 32 session mutexes based on 150 max processes and 0 max threads.
+[Fri Jun 10 11:32:39 2005] [notice] mod_security/1.9dev2 configured
+[Fri Jun 10 11:32:39 2005] [notice] Apache/2.0.49 (Fedora) configured -- resuming normal operations
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2337 in scoreboard slot 1
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2338 in scoreboard slot 2
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2339 in scoreboard slot 3
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2342 in scoreboard slot 6
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2343 in scoreboard slot 7
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2340 in scoreboard slot 4
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2341 in scoreboard slot 5
+[Fri Jun 10 11:32:39 2005] [notice] jk2_init() Found child 2336 in scoreboard slot 0
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [error] mod_jk child init 1 0
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:32:39 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Fri Jun 10 11:40:14 2005] [error] [client 213.205.73.192] Invalid method in request get /scripts/..%e0%80%af../..%e0%80%af../..%e0%80%af../winnt/system32/cmd.exe?/c+dir
+[Fri Jun 10 11:59:44 2005] [error] [client 61.4.64.179] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 14:21:15 2005] [error] [client 61.10.7.8] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 14:35:01 2005] [error] [client 24.2.25.240] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 15:56:08 2005] [error] [client 219.130.98.254] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 20:23:18 2005] [error] [client 210.22.201.118] File does not exist: /var/www/html/scripts/root.exe
+[Fri Jun 10 20:23:18 2005] [error] [client 210.22.201.119] File does not exist: /var/www/html/MSADC
+[Fri Jun 10 20:23:19 2005] [error] [client 210.22.201.120] File does not exist: /var/www/html/c
+[Fri Jun 10 20:23:19 2005] [error] [client 210.22.201.117] File does not exist: /var/www/html/d
+[Fri Jun 10 20:23:20 2005] [error] [client 210.22.201.124] File does not exist: /var/www/html/scripts/..%5c..
+[Fri Jun 10 20:23:20 2005] [error] [client 210.22.201.118] File does not exist: /var/www/html/_vti_bin
+[Fri Jun 10 20:23:21 2005] [error] [client 210.22.201.121] File does not exist: /var/www/html/_mem_bin
+[Fri Jun 10 20:23:21 2005] [error] [client 210.22.201.125] File does not exist: /var/www/html/msadc
+[Fri Jun 10 20:23:22 2005] [error] [client 210.22.201.120] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Fri Jun 10 20:23:22 2005] [error] [client 210.22.201.122] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Fri Jun 10 20:23:23 2005] [error] [client 210.22.201.117] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Fri Jun 10 20:23:24 2005] [error] [client 210.22.201.121] File does not exist: /var/www/html/scripts/..%5c..
+[Fri Jun 10 20:23:25 2005] [error] [client 210.22.201.119] File does not exist: /var/www/html/scripts/..%2f..
+[Fri Jun 10 21:02:54 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/root.exe
+[Fri Jun 10 21:02:56 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/MSADC
+[Fri Jun 10 21:02:59 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/c
+[Fri Jun 10 21:03:01 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/d
+[Fri Jun 10 21:03:04 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/..%5c..
+[Fri Jun 10 21:03:06 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/_vti_bin
+[Fri Jun 10 21:03:12 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/_mem_bin
+[Fri Jun 10 21:03:14 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/msadc
+[Fri Jun 10 21:03:17 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Fri Jun 10 21:03:22 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Fri Jun 10 21:03:24 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Fri Jun 10 21:03:38 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/..%5c..
+[Fri Jun 10 21:03:44 2005] [error] [client 61.142.136.20] File does not exist: /var/www/html/scripts/..%2f..
+[Fri Jun 10 21:21:32 2005] [error] [client 61.154.135.10] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 22:41:39 2005] [error] [client 12.168.121.2] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 23:36:53 2005] [error] [client 219.127.107.18] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 23:42:39 2005] [error] [client 219.43.32.119] Directory index forbidden by rule: /var/www/html/
+[Fri Jun 10 23:46:20 2005] [error] [client 222.166.160.83] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 01:35:55 2005] [error] [client 202.188.127.61] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 02:46:33 2005] [error] [client 58.83.8.110] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 03:03:03 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:03 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:03 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:04 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:04 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:04 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:04 2005] [error] jk2_init() Can't find child 4210 in scoreboard
+[Sat Jun 11 03:03:04 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:04 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:04 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:04 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:04 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:05 2005] [error] jk2_init() Can't find child 4211 in scoreboard
+[Sat Jun 11 03:03:05 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:05 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:05 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:05 2005] [error] jk2_init() Can't find child 4212 in scoreboard
+[Sat Jun 11 03:03:05 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:05 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:05 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:05 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:05 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:05 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:06 2005] [error] jk2_init() Can't find child 4213 in scoreboard
+[Sat Jun 11 03:03:06 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:06 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:06 2005] [notice] jk2_init() Found child 4214 in scoreboard slot 12
+[Sat Jun 11 03:03:06 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:06 2005] [error] jk2_init() Can't find child 4215 in scoreboard
+[Sat Jun 11 03:03:06 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:06 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:06 2005] [error] jk2_init() Can't find child 4216 in scoreboard
+[Sat Jun 11 03:03:06 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:06 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:06 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:07 2005] [error] jk2_init() Can't find child 4217 in scoreboard
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [error] jk2_init() Can't find child 4218 in scoreboard
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [notice] jk2_init() Found child 4219 in scoreboard slot 17
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [error] jk2_init() Can't find child 4220 in scoreboard
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [error] jk2_init() Can't find child 4221 in scoreboard
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:07 2005] [error] jk2_init() Can't find child 4222 in scoreboard
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:07 2005] [error] jk2_init() Can't find child 4223 in scoreboard
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [notice] jk2_init() Found child 4224 in scoreboard slot 22
+[Sat Jun 11 03:03:07 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:07 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4225 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4226 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4227 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4228 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [notice] jk2_init() Found child 4229 in scoreboard slot 27
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4231 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4232 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4233 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4234 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] jk2_init() Found child 4230 in scoreboard slot 28
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [notice] jk2_init() Found child 4235 in scoreboard slot 33
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4236 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4237 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [error] jk2_init() Can't find child 4238 in scoreboard
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:08 2005] [notice] jk2_init() Found child 4240 in scoreboard slot 38
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [notice] jk2_init() Found child 4239 in scoreboard slot 37
+[Sat Jun 11 03:03:08 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:08 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4241 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4242 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4243 in scoreboard
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4244 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:09 2005] [notice] jk2_init() Found child 4245 in scoreboard slot 43
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4247 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4248 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4249 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [notice] jk2_init() Found child 4246 in scoreboard slot 44
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [notice] jk2_init() Found child 4250 in scoreboard slot 48
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4251 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4252 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4253 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [notice] jk2_init() Found child 4254 in scoreboard slot 52
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [notice] jk2_init() Found child 4255 in scoreboard slot 53
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4257 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] jk2_init() Can't find child 4258 in scoreboard
+[Sat Jun 11 03:03:09 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:09 2005] [error] mod_jk child init 1 -2
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:09 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4259 in scoreboard slot 57
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4260 in scoreboard slot 58
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4261 in scoreboard slot 59
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4262 in scoreboard slot 60
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4263 in scoreboard slot 61
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4264 in scoreboard slot 62
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4265 in scoreboard slot 63
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4256 in scoreboard slot 54
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4266 in scoreboard slot 64
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4267 in scoreboard slot 65
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4268 in scoreboard slot 66
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4269 in scoreboard slot 67
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4270 in scoreboard slot 68
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4272 in scoreboard slot 70
+[Sat Jun 11 03:03:10 2005] [notice] jk2_init() Found child 4271 in scoreboard slot 69
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:10 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:11 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] script not found or unable to stat: /var/www/cgi-bin/stats
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:12 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/stats/awstats.pl
+[Sat Jun 11 03:03:12 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:13 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:13 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/awstats.pl
+[Sat Jun 11 03:03:13 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:14 2005] [error] [client 202.133.98.6] File does not exist: /var/www/html/cgi
+[Sat Jun 11 03:03:14 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:15 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:16 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:17 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:18 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:19 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:20 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:21 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:22 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:23 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:24 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:25 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:26 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:27 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:28 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:29 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:30 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:31 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:32 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:33 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:34 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:35 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:36 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:37 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:38 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:39 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:40 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:41 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:42 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:43 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:44 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:45 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:46 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:47 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:48 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:49 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:50 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:51 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:52 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:53 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:54 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:55 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:56 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:57 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:58 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:03:59 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:04:00 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:04:01 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 03:04:02 2005] [notice] mod_jk2 Shutting down
+[Sat Jun 11 04:30:30 2005] [error] [client 194.207.237.21] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 05:05:09 2005] [error] [client 222.166.160.74] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 05:31:47 2005] [error] [client 194.63.235.157] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 06:09:36 2005] [error] [client 222.166.160.57] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 07:06:50 2005] [error] [client 211.92.56.72] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 11:45:09 2005] [error] [client 64.147.69.59] Invalid method in request get /scripts/..%c0%af../..%c0%af../..%c0%af../winnt/system32/cmd.exe?/c+dir
+[Sat Jun 11 11:46:25 2005] [error] [client 207.181.126.3] Invalid method in request get /scripts/..%c0%af../..%c0%af../..%c0%af../winnt/system32/cmd.exe?/c+dir
+[Sat Jun 11 11:56:28 2005] [error] [client 12.216.230.125] Invalid method in request get /scripts/..%c0%af../..%c0%af../..%c0%af../winnt/system32/cmd.exe?/c+dir
+[Sat Jun 11 12:00:08 2005] [error] [client 202.118.167.71] Invalid method in request get /scripts/root.exe?/c+dir
+[Sat Jun 11 14:32:51 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:51 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:51 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:52 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:52 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:52 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:53 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:54 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:54 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:54 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:55 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:55 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:56 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:56 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:57 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:57 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:58 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:32:58 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:33:01 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 14:33:02 2005] [error] [client 212.238.198.203] script not found or unable to stat: /var/www/cgi-bin/openwebmail
+[Sat Jun 11 15:40:59 2005] [error] [client 66.57.17.62] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 17:04:42 2005] [error] [client 222.187.122.26] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 17:35:30 2005] [error] [client 202.118.167.71] Invalid method in request get /scripts/root.exe?/c+dir
+[Sat Jun 11 18:27:33 2005] [error] [client 218.6.162.19] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 20:24:25 2005] [error] [client 218.106.115.25] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 21:20:03 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/scripts/root.exe
+[Sat Jun 11 21:20:05 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/MSADC
+[Sat Jun 11 21:20:09 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/c
+[Sat Jun 11 21:20:14 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/d
+[Sat Jun 11 21:20:15 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/scripts/..%5c..
+[Sat Jun 11 21:20:20 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/_vti_bin
+[Sat Jun 11 21:20:22 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/_mem_bin
+[Sat Jun 11 21:20:23 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/msadc
+[Sat Jun 11 21:20:25 2005] [error] [client 218.87.132.28] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Sat Jun 11 22:04:40 2005] [error] [client 71.114.6.21] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 23:25:49 2005] [error] [client 220.228.80.199] Invalid method in request get /scripts/..%e0%80%af../..%e0%80%af../..%e0%80%af../winnt/system32/cmd.exe?/c+dir
+[Sat Jun 11 23:26:20 2005] [error] [client 62.174.213.12] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 23:35:39 2005] [error] [client 61.53.165.241] Directory index forbidden by rule: /var/www/html/
+[Sat Jun 11 23:37:52 2005] [error] [client 64.60.251.53] Invalid method in request get /scripts/..%e0%80%af../..%e0%80%af../..%e0%80%af../winnt/system32/cmd.exe?/c+dir
+[Sat Jun 11 23:39:35 2005] [error] [client 61.10.7.36] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 00:46:33 2005] [error] [client 218.141.152.50] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 01:11:30 2005] [error] [client 65.16.115.18] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 01:23:39 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/root.exe
+[Sun Jun 12 01:23:42 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/MSADC
+[Sun Jun 12 01:23:45 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/c
+[Sun Jun 12 01:23:48 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/d
+[Sun Jun 12 01:23:52 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/..%5c..
+[Sun Jun 12 01:23:58 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 01:24:02 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/_mem_bin
+[Sun Jun 12 01:24:06 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/msadc
+[Sun Jun 12 01:24:13 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Sun Jun 12 01:24:22 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Sun Jun 12 01:24:26 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Sun Jun 12 01:24:53 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/..%5c..
+[Sun Jun 12 01:24:57 2005] [error] [client 203.112.195.156] File does not exist: /var/www/html/scripts/..%2f..
+[Sun Jun 12 02:50:29 2005] [error] [client 143.127.131.4] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 03:51:30 2005] [error] [client 61.10.7.132] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 04:04:15 2005] [notice] Graceful restart requested, doing restart
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:15 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:16 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:16 2005] [notice] mod_jk2 Shutting down
+[Sun Jun 12 04:04:29 2005] [notice] Digest: generating secret for digest authentication ...
+[Sun Jun 12 04:04:29 2005] [notice] Digest: done
+[Sun Jun 12 04:04:29 2005] [notice] LDAP: Built with OpenLDAP LDAP SDK
+[Sun Jun 12 04:04:29 2005] [notice] LDAP: SSL support unavailable
+[Sun Jun 12 04:04:29 2005] [error] env.createBean2(): Factory error creating channel.jni:jni ( channel.jni, jni)
+[Sun Jun 12 04:04:29 2005] [error] config.update(): Can't create channel.jni:jni
+[Sun Jun 12 04:04:29 2005] [error] env.createBean2(): Factory error creating vm: ( vm, )
+[Sun Jun 12 04:04:29 2005] [error] config.update(): Can't create vm:
+[Sun Jun 12 04:04:29 2005] [error] env.createBean2(): Factory error creating worker.jni:onStartup ( worker.jni, onStartup)
+[Sun Jun 12 04:04:29 2005] [error] config.update(): Can't create worker.jni:onStartup
+[Sun Jun 12 04:04:29 2005] [error] env.createBean2(): Factory error creating worker.jni:onShutdown ( worker.jni, onShutdown)
+[Sun Jun 12 04:04:29 2005] [error] config.update(): Can't create worker.jni:onShutdown
+[Sun Jun 12 04:04:32 2005] [notice] mod_python: Creating 32 session mutexes based on 150 max processes and 0 max threads.
+[Sun Jun 12 04:04:33 2005] [notice] mod_security/1.9dev2 configured
+[Sun Jun 12 04:04:33 2005] [notice] Apache/2.0.49 (Fedora) configured -- resuming normal operations
+[Sun Jun 12 04:04:33 2005] [error] jk2_init() Can't find child 8728 in scoreboard
+[Sun Jun 12 04:04:33 2005] [error] jk2_init() Can't find child 8729 in scoreboard
+[Sun Jun 12 04:04:33 2005] [error] jk2_init() Can't find child 8730 in scoreboard
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] mod_jk child init 1 -2
+[Sun Jun 12 04:04:33 2005] [error] jk2_init() Can't find child 8731 in scoreboard
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] mod_jk child init 1 -2
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] mod_jk child init 1 -2
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] mod_jk child init 1 -2
+[Sun Jun 12 04:04:33 2005] [notice] jk2_init() Found child 8732 in scoreboard slot 19
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] jk2_init() Can't find child 8734 in scoreboard
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] mod_jk child init 1 -2
+[Sun Jun 12 04:04:33 2005] [error] jk2_init() Can't find child 8735 in scoreboard
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:04:33 2005] [error] mod_jk child init 1 -2
+[Sun Jun 12 04:04:33 2005] [notice] jk2_init() Found child 8733 in scoreboard slot 21
+[Sun Jun 12 04:04:33 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Sun Jun 12 04:26:08 2005] [error] [client 210.91.137.35] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 04:26:15 2005] [error] [client 207.203.80.15] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 04:26:59 2005] [error] [client 210.91.137.35] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 04:39:26 2005] [error] [client 210.91.137.35] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 04:40:08 2005] [error] [client 210.91.137.35] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 04:52:39 2005] [error] [client 222.54.8.57] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 04:56:27 2005] [error] [client 210.91.137.35] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 04:58:31 2005] [error] [client 204.118.132.67] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 05:05:35 2005] [error] [client 210.91.137.35] request failed: URI too long (longer than 8190)
+[Sun Jun 12 05:06:47 2005] [error] [client 210.91.137.35] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 05:17:29 2005] [error] [client 61.10.7.134] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 05:39:07 2005] [error] [client 219.154.29.181] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 06:43:15 2005] [error] [client 216.26.210.108] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 07:45:15 2005] [error] [client 216.190.165.241] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 08:40:18 2005] [error] [client 66.58.185.167] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 09:05:49 2005] [error] [client 24.234.96.149] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 11:19:55 2005] [error] [client 70.177.77.158] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 13:14:15 2005] [error] [client 63.197.230.242] Invalid method in request get /scripts/..%c1%9c../winnt/system32/cmd.exe?/c+dir
+[Sun Jun 12 13:27:51 2005] [error] [client 218.106.116.66] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 13:55:56 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/root.exe
+[Sun Jun 12 13:55:56 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/MSADC
+[Sun Jun 12 13:55:56 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/c
+[Sun Jun 12 13:55:56 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/d
+[Sun Jun 12 13:55:56 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/..%5c..
+[Sun Jun 12 13:55:57 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 13:55:57 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/_mem_bin
+[Sun Jun 12 13:55:57 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/msadc
+[Sun Jun 12 13:55:57 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Sun Jun 12 13:55:58 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Sun Jun 12 13:55:58 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Sun Jun 12 13:55:58 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/..%5c..
+[Sun Jun 12 13:55:59 2005] [error] [client 24.163.159.161] File does not exist: /var/www/html/scripts/..%2f..
+[Sun Jun 12 15:27:51 2005] [error] [client 69.216.18.133] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 16:25:46 2005] [error] [client 218.208.207.65] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 17:32:56 2005] [error] [client 38.138.93.66] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 18:26:27 2005] [error] [client 60.170.0.82] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 18:59:47 2005] [error] [client 64.218.24.130] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 19:08:54 2005] [error] [client 65.106.172.142] Directory index forbidden by rule: /var/www/html/
+[Sun Jun 12 22:21:20 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/root.exe
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/MSADC
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/c
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/d
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/..%5c..
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/_vti_bin
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/_mem_bin
+[Sun Jun 12 22:21:21 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/msadc
+[Sun Jun 12 22:21:22 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Sun Jun 12 22:21:22 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Sun Jun 12 22:21:22 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Sun Jun 12 22:21:22 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/..%5c..
+[Sun Jun 12 22:21:23 2005] [error] [client 68.251.32.120] File does not exist: /var/www/html/scripts/..%2f..
+[Mon Jun 13 00:45:01 2005] [error] [client 61.146.166.139] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 01:16:37 2005] [error] [client 63.203.254.140] Invalid method in request get /scripts/.%252e/.%252e/winnt/system32/cmd.exe?/c+dir
+[Mon Jun 13 01:58:29 2005] [error] [client 61.4.64.136] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 02:12:54 2005] [error] [client 218.102.75.155] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:48 2005] [notice] jk2_init() Found child 15950 in scoreboard slot 0
+[Mon Jun 13 04:18:48 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 04:18:48 2005] [error] mod_jk child init 1 0
+[Mon Jun 13 04:18:48 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:50 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:50 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:50 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:51 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:51 2005] [error] jk2_init() Can't find child 15951 in scoreboard
+[Mon Jun 13 04:18:51 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 04:18:51 2005] [error] mod_jk child init 1 -2
+[Mon Jun 13 04:18:52 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:52 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:53 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:18:55 2005] [error] [client 218.18.40.53] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:00 2005] [error] jk2_init() Can't find child 15976 in scoreboard
+[Mon Jun 13 04:38:00 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 04:38:00 2005] [error] mod_jk child init 1 -2
+[Mon Jun 13 04:38:01 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:02 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:02 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:02 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:02 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:02 2005] [notice] jk2_init() Found child 15977 in scoreboard slot 4
+[Mon Jun 13 04:38:02 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 04:38:04 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:04 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:05 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:05 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:06 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:09 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:22 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:38:42 2005] [error] [client 218.82.188.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 04:42:46 2005] [error] [client 61.4.64.137] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 05:40:10 2005] [error] [client 219.148.206.251] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:39 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:49 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:50 2005] [error] jk2_init() Can't find child 16125 in scoreboard
+[Mon Jun 13 06:21:50 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 06:21:50 2005] [error] mod_jk child init 1 -2
+[Mon Jun 13 06:21:51 2005] [notice] jk2_init() Found child 16126 in scoreboard slot 6
+[Mon Jun 13 06:21:51 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:53 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:54 2005] [error] jk2_init() Can't find child 16127 in scoreboard
+[Mon Jun 13 06:21:54 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 06:21:54 2005] [error] mod_jk child init 1 -2
+[Mon Jun 13 06:21:55 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:21:56 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:22:00 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:22:03 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 06:22:03 2005] [error] [client 219.133.246.207] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 07:09:19 2005] [error] [client 205.184.70.141] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 07:54:39 2005] [error] [client 218.65.204.13] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 08:06:19 2005] [error] [client 61.10.7.152] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 11:56:38 2005] [error] [client 222.166.160.112] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 12:11:21 2005] [error] [client 216.152.230.130] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 14:02:47 2005] [error] [client 65.5.128.20] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 14:16:34 2005] [error] [client 24.151.176.123] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 14:20:58 2005] [error] [client 172.156.53.140] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 16:06:21 2005] [error] [client 84.92.64.33] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:25 2005] [error] jk2_init() Can't find child 17283 in scoreboard
+[Mon Jun 13 18:38:25 2005] [notice] workerEnv.init() ok /etc/httpd/conf/workers2.properties
+[Mon Jun 13 18:38:25 2005] [error] mod_jk child init 1 -2
+[Mon Jun 13 18:38:28 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:28 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:28 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:28 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 18:38:34 2005] [error] [client 195.23.79.241] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:05 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:09 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:10 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:19 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:19 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:20 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:20 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:22 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:22 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:23 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:24 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 22:43:36 2005] [error] [client 218.68.233.47] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 23:21:44 2005] [error] [client 202.185.32.194] Directory index forbidden by rule: /var/www/html/
+[Mon Jun 13 23:22:09 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/root.exe
+[Mon Jun 13 23:22:10 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/MSADC
+[Mon Jun 13 23:22:10 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/c
+[Mon Jun 13 23:22:11 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/d
+[Mon Jun 13 23:22:12 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/..%5c..
+[Mon Jun 13 23:22:12 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/_vti_bin
+[Mon Jun 13 23:22:13 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/_mem_bin
+[Mon Jun 13 23:22:13 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/msadc
+[Mon Jun 13 23:22:14 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Mon Jun 13 23:22:15 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Mon Jun 13 23:22:15 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Mon Jun 13 23:22:17 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/..%5c..
+[Mon Jun 13 23:22:18 2005] [error] [client 61.109.45.7] File does not exist: /var/www/html/scripts/..%2f..
+[Tue Jun 14 00:24:20 2005] [error] [client 202.118.167.71] Invalid method in request get /scripts/root.exe?/c+dir
+[Tue Jun 14 01:06:03 2005] [error] [client 63.251.223.102] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 02:13:45 2005] [error] [client 213.94.248.32] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 03:56:26 2005] [error] [client 61.10.7.21] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 04:08:29 2005] [error] [client 222.166.160.195] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 04:33:37 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/root.exe
+[Tue Jun 14 04:33:37 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/MSADC
+[Tue Jun 14 04:33:37 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/c
+[Tue Jun 14 04:33:38 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/d
+[Tue Jun 14 04:33:38 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/..%5c..
+[Tue Jun 14 04:33:38 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 04:33:39 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/_mem_bin
+[Tue Jun 14 04:33:39 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/msadc
+[Tue Jun 14 04:33:39 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/..\xc1\x1c..
+[Tue Jun 14 04:33:40 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/..\xc0\xaf..
+[Tue Jun 14 04:33:40 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/..\xc1\x9c..
+[Tue Jun 14 04:33:41 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/..%5c..
+[Tue Jun 14 04:33:42 2005] [error] [client 85.226.115.57] File does not exist: /var/www/html/scripts/..%2f..
+[Tue Jun 14 04:34:43 2005] [error] [client 61.10.7.84] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 06:55:39 2005] [error] [client 61.151.251.79] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 07:34:31 2005] [error] [client 157.130.97.158] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 09:18:22 2005] [error] [client 222.139.128.252] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 11:32:02 2005] [error] [client 61.72.66.8] Invalid method in request get /scripts/..%5c../winnt/system32/cmd.exe?/c+dir
+[Tue Jun 14 11:33:44 2005] [error] [client 62.221.237.83] Invalid method in request get /scripts/..%5c../winnt/system32/cmd.exe?/c+dir
+[Tue Jun 14 12:03:54 2005] [error] [client 66.215.199.91] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 12:11:47 2005] [error] [client 70.186.18.108] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:00 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:01 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:01 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:01 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:01 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:02 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:02 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:02 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:02 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:02 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:02 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:03 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:04 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:05 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:05 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:06 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:06 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:06 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 13:17:07 2005] [error] [client 60.191.134.226] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 15:57:00 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:00 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:00 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:00 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:00 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:01 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:02 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:02 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:02 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:02 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:02 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:02 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:03 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:03 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:03 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 15:57:03 2005] [error] [client 81.214.165.213] File does not exist: /var/www/html/_vti_bin
+[Tue Jun 14 16:26:45 2005] [error] [client 63.194.69.35] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 16:32:48 2005] [error] [client 24.179.9.65] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 17:26:25 2005] [error] [client 222.166.160.174] Directory index forbidden by rule: /var/www/html/
+[Tue Jun 14 21:53:59 2005] [error] [client 66.17.15.139] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 00:35:38 2005] [error] [client 202.118.167.71] Invalid method in request get /scripts/root.exe?/c+dir
+[Wed Jun 15 01:25:41 2005] [error] [client 218.4.158.253] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 02:03:23 2005] [error] [client 24.77.0.51] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 06:38:38 2005] [error] [client 222.166.160.118] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 06:47:30 2005] [error] [client 220.176.26.19] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 07:17:11 2005] [error] [client 71.114.128.132] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 07:29:53 2005] [error] [client 220.142.56.133] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 07:36:06 2005] [error] [client 61.153.220.158] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:30:03 2005] [error] [client 219.149.52.98] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:00 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:00 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:00 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:00 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:01 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:01 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:01 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:02 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:03 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:03 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:03 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:03 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:03 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:05 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:06 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:06 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:07 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:39:07 2005] [error] [client 219.133.247.159] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:46:37 2005] [error] [client 61.146.41.126] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 08:53:53 2005] [error] [client 211.211.14.224] File does not exist: /var/www/html/_vti_bin
+[Wed Jun 15 08:53:53 2005] [error] [client 211.211.14.224] request failed: URI too long (longer than 8190)
+[Wed Jun 15 13:02:28 2005] [error] [client 218.59.238.180] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 13:58:40 2005] [error] [client 220.248.27.194] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 14:14:02 2005] [error] [client 150.161.187.25] File does not exist: /var/www/html/_vti_bin
+[Wed Jun 15 14:14:02 2005] [error] [client 150.161.187.25] request failed: URI too long (longer than 8190)
+[Wed Jun 15 15:51:23 2005] [error] [client 65.69.86.207] File does not exist: /var/www/html/scripts/root.exe
+[Wed Jun 15 17:01:30 2005] [error] [client 204.49.32.16] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 17:26:51 2005] [error] [client 202.57.142.162] File does not exist: /var/www/html/sumthin
+[Wed Jun 15 18:21:31 2005] [error] [client 24.0.190.246] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 19:36:14 2005] [error] [client 221.164.183.183] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 21:35:19 2005] [error] [client 24.248.72.254] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 21:49:36 2005] [error] [client 201.135.79.58] Directory index forbidden by rule: /var/www/html/
+[Wed Jun 15 23:22:15 2005] [error] [client 65.106.89.67] Directory index forbidden by rule: /var/www/html/
+[Thu Jun 16 00:18:19 2005] [error] [client 202.118.167.71] Invalid method in request get /scripts/root.exe?/c+dir
+[Thu Jun 16 01:06:31 2005] [error] [client 204.118.132.65] Directory index forbidden by rule: /var/www/html/

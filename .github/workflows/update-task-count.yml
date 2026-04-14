@@ -1,0 +1,35 @@
+name: Update task count
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tasks/task_*.md"
+
+jobs:
+  update-task-count:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Count tasks and update README
+        run: |
+          COUNT=$(ls tasks/task_*.md 2>/dev/null | wc -l | tr -d ' ')
+
+          # Update the badge
+          sed -i "s|<!-- task-count-badge -->.*<!-- /task-count-badge -->|<!-- task-count-badge -->![Tasks](https://img.shields.io/badge/tasks-${COUNT}-orange)<!-- /task-count-badge -->|" README.md
+
+          # Update the prose text
+          sed -i "s|<!-- task-count-text -->.*<!-- /task-count-text -->|<!-- task-count-text -->PinchBench includes ${COUNT} tasks across real-world categories:<!-- /task-count-text -->|" README.md
+
+      - name: Commit if changed
+        run: |
+          git diff --quiet README.md && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update task count in README [skip ci]"
+          git push

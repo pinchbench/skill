@@ -1,5 +1,5 @@
 ---
-id: task_XX_name
+id: task_descriptive_name
 name: Task Display Name
 category: category_name
 grading_type: automated # automated | llm_judge | hybrid
@@ -261,7 +261,7 @@ workspace_files:
 Before submitting a new task, verify:
 
 - [ ] YAML frontmatter is complete and valid
-- [ ] `id` follows naming convention: `task_XX_descriptive_name`
+- [ ] `id` follows naming convention: `task_descriptive_name` (must match filename without `.md`)
 - [ ] `grading_type` matches the sections provided
 - [ ] Prompt is clear and unambiguous
 - [ ] Expected behavior describes acceptable solutions

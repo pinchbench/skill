@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update BENCHMARK_VERSION file
+        run: echo "${{ steps.version.outputs.VERSION }}" > BENCHMARK_VERSION
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add BENCHMARK_VERSION
+          git commit -m "chore: bump version to ${{ steps.version.outputs.VERSION }}"
+          git push

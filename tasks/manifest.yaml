@@ -1,0 +1,61 @@
+# Task manifest — single source of truth for task ordering.
+#
+# • New tasks: append the task ID to the end of this list.
+# • The ID must match the filename (without .md) in this directory.
+# • A CI lint check verifies that every task_*.md file appears here
+#   and every entry here has a corresponding file.
+
+tasks:
+  - task_sanity
+  - task_calendar
+  - task_stock
+  - task_blog
+  - task_weather
+  - task_summary
+  - task_events
+  - task_email
+  - task_memory
+  - task_files
+  - task_workflow
+  - task_clawdhub
+  - task_skill_search
+  - task_image_gen
+  - task_humanizer
+  - task_daily_summary
+  - task_email_triage
+  - task_email_search
+  - task_market_research
+  - task_spreadsheet_summary
+  - task_eli5_pdf_summary
+  - task_openclaw_comprehension
+  - task_second_brain
+  - task_polymarket_briefing
+  - task_access_log_anomaly
+  - task_image_identification
+  - task_playwright_e2e
+  - task_executive_lookup
+  - task_financial_ratio_calculation
+  - task_earnings_analysis
+  - task_todo_list_cleanup
+  - task_email_reply_drafting
+  - task_shell_command_generator
+  - task_git_rescue_recovery
+  - task_contract_analysis
+  - task_csv_stock_trend
+  - task_csv_stock_volatility
+  - task_csv_stock_best_worst
+  - task_csv_finance_report
+  - task_cicd_pipeline_debug
+  - task_test_generation
+  - task_k8s_debugging
+  - task_selector_fix
+  - task_dockerfile_optimization
+  - task_commit_message_writer
+  - task_readme_generation
+  - task_multi_file_refactoring
+  - task_gws_email_triage
+  - task_gws_cross_service
+  - task_gws_task_management
+  - task_gh_issue_triage
+  - task_pdf_to_calendar
+  - task_cve_security_triage

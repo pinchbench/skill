@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Team Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #f3f4f6; }
+
+    .dashboard-shell { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar-nav { width: 240px; background: #1e293b; color: #e2e8f0; padding: 1rem; }
+    .sidebar-nav .brand-logo { font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; }
+    .sidebar-nav .nav-items { list-style: none; }
+    .sidebar-nav .nav-items li { margin-bottom: 0.5rem; }
+    .sidebar-nav .nav-items a {
+      color: #94a3b8; text-decoration: none; display: block; padding: 0.5rem 0.75rem;
+      border-radius: 6px; transition: background 0.15s;
+    }
+    .sidebar-nav .nav-items a:hover,
+    .sidebar-nav .nav-items a[aria-current="page"] { background: #334155; color: #f8fafc; }
+
+    /* Main content */
+    .main-content { flex: 1; padding: 2rem; }
+
+    /* Header bar */
+    .header-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2rem;
+    }
+    .header-bar .page-title { font-size: 1.5rem; font-weight: 600; }
+    .header-bar .user-menu { position: relative; }
+    .header-bar .user-menu .avatar-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: #6366f1; color: #fff; font-weight: 600; cursor: pointer;
+    }
+    .header-bar .user-menu .dropdown-panel {
+      display: none; position: absolute; right: 0; top: 44px;
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+      min-width: 180px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .header-bar .user-menu .dropdown-panel.is-open { display: block; }
+    .header-bar .user-menu .dropdown-panel a {
+      display: block; padding: 0.5rem 1rem; color: #374151; text-decoration: none;
+    }
+    .header-bar .user-menu .dropdown-panel a:hover { background: #f3f4f6; }
+
+    /* Metrics grid */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .metric-card {
+      background: #fff; border-radius: 12px; padding: 1.5rem;
+      border: 1px solid #e5e7eb;
+    }
+    .metric-card .metric-label { font-size: 0.85rem; color: #6b7280; margin-bottom: 0.25rem; }
+    .metric-card .metric-value { font-size: 1.75rem; font-weight: 700; }
+    .metric-card .metric-trend { font-size: 0.8rem; margin-top: 0.25rem; }
+    .metric-card .metric-trend.trend-up { color: #16a34a; }
+    .metric-card .metric-trend.trend-down { color: #dc2626; }
+
+    /* Data table */
+    .data-section { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; padding: 1.5rem; }
+    .data-section .section-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem;
+    }
+    .data-section .section-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .data-section .section-header .search-input {
+      padding: 0.4rem 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;
+      font-size: 0.9rem; width: 220px;
+    }
+    .data-section table { width: 100%; border-collapse: collapse; }
+    .data-section thead th {
+      text-align: left; padding: 0.75rem; border-bottom: 2px solid #e5e7eb;
+      font-size: 0.85rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .data-section thead th[aria-sort] { cursor: pointer; }
+    .data-section tbody tr { border-bottom: 1px solid #f3f4f6; }
+    .data-section tbody td { padding: 0.75rem; }
+    .data-section tbody tr:hover { background: #f9fafb; }
+    .status-badge {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 9999px;
+      font-size: 0.75rem; font-weight: 500;
+    }
+    .status-badge.status-active { background: #dcfce7; color: #166534; }
+    .status-badge.status-idle { background: #fef9c3; color: #854d0e; }
+    .status-badge.status-offline { background: #fee2e2; color: #991b1b; }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 1rem; font-size: 0.85rem; color: #6b7280;
+    }
+    .pagination-bar .page-controls button {
+      padding: 0.3rem 0.75rem; border: 1px solid #d1d5db; background: #fff;
+      border-radius: 4px; cursor: pointer; margin-left: 0.25rem;
+    }
+    .pagination-bar .page-controls button.is-active { background: #6366f1; color: #fff; border-color: #6366f1; }
+    .pagination-bar .page-controls button:disabled { opacity: 0.4; cursor: default; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 100; justify-content: center; align-items: center;
+    }
+    .modal-overlay.is-visible { display: flex; }
+    .modal-dialog {
+      background: #fff; border-radius: 12px; padding: 2rem;
+      max-width: 480px; width: 100%;
+    }
+    .modal-dialog .modal-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+    .modal-dialog .form-group { margin-bottom: 1rem; }
+    .modal-dialog .form-group label { display: block; font-size: 0.85rem; color: #374151; margin-bottom: 0.25rem; }
+    .modal-dialog .form-group input,
+    .modal-dialog .form-group select {
+      width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;
+    }
+    .modal-dialog .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .btn-primary {
+      padding: 0.5rem 1.25rem; background: #6366f1; color: #fff;
+      border: none; border-radius: 6px; cursor: pointer; font-weight: 500;
+    }
+    .btn-secondary {
+      padding: 0.5rem 1.25rem; background: #fff; color: #374151;
+      border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;
+    }
+
+    /* Toast */
+    .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200; }
+    .toast-message {
+      background: #1e293b; color: #f8fafc; padding: 0.75rem 1.25rem;
+      border-radius: 8px; margin-top: 0.5rem; font-size: 0.9rem;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div class="dashboard-shell">
+    <!-- Sidebar -->
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <div class="brand-logo">TeamHub</div>
+      <ul class="nav-items">
+        <li><a href="#" aria-current="page" data-page="dashboard">Dashboard</a></li>
+        <li><a href="#" data-page="projects">Projects</a></li>
+        <li><a href="#" data-page="members">Members</a></li>
+        <li><a href="#" data-page="settings">Settings</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header-bar">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="user-menu">
+          <button class="avatar-btn" aria-label="User menu" data-action="toggle-menu">JD</button>
+          <div class="dropdown-panel" role="menu">
+            <a href="#" role="menuitem" data-action="profile">Profile</a>
+            <a href="#" role="menuitem" data-action="logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card" data-metric="members">
+          <div class="metric-label">Total Members</div>
+          <div class="metric-value">48</div>
+          <div class="metric-trend trend-up">+3 this month</div>
+        </div>
+        <div class="metric-card" data-metric="projects">
+          <div class="metric-label">Active Projects</div>
+          <div class="metric-value">12</div>
+          <div class="metric-trend trend-up">+2 this month</div>
+        </div>
+        <div class="metric-card" data-metric="tasks">
+          <div class="metric-label">Open Tasks</div>
+          <div class="metric-value">156</div>
+          <div class="metric-trend trend-down">+23 this week</div>
+        </div>
+        <div class="metric-card" data-metric="completion">
+          <div class="metric-label">Completion Rate</div>
+          <div class="metric-value">87%</div>
+          <div class="metric-trend trend-up">+4% vs last month</div>
+        </div>
+      </div>
+
+      <!-- Data table -->
+      <div class="data-section">
+        <div class="section-header">
+          <h2>Team Members</h2>
+          <input type="text" class="search-input" placeholder="Search members..." data-action="search">
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th aria-sort="ascending" data-sort="name">Name</th>
+              <th data-sort="role">Role</th>
+              <th data-sort="status">Status</th>
+              <th data-sort="tasks">Tasks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-member-id="1">
+              <td>Alice Johnson</td>
+              <td>Engineering Lead</td>
+              <td><span class="status-badge status-active">Active</span></td>
+              <td>14</td>
+              <td><button class="btn-secondary" data-action="edit-member" data-member-id="1">Edit</button></td>
+            </tr>
+            <tr data-member-id="2">
+              <td>Bob Smith</td>
+              <td>Designer</td>
+              <td><span class="status-badge status-active">Active</span></td>
+              <td>8</td>
+              <td><button class="btn-secondary" data-action="edit-member" data-member-id="2">Edit</button></td>
+            </tr>
+            <tr data-member-id="3">
+              <td>Carol Davis</td>
+              <td>Product Manager</td>
+              <td><span class="status-badge status-idle">Idle</span></td>
+              <td>22</td>
+              <td><button class="btn-secondary" data-action="edit-member" data-member-id="3">Edit</button></td>
+            </tr>
+            <tr data-member-id="4">
+              <td>Dan Wilson</td>
+              <td>Backend Engineer</td>
+              <td><span class="status-badge status-offline">Offline</span></td>
+              <td>11</td>
+              <td><button class="btn-secondary" data-action="edit-member" data-member-id="4">Edit</button></td>
+            </tr>
+            <tr data-member-id="5">
+              <td>Eva Martinez</td>
+              <td>Frontend Engineer</td>
+              <td><span class="status-badge status-active">Active</span></td>
+              <td>19</td>
+              <td><button class="btn-secondary" data-action="edit-member" data-member-id="5">Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination-bar">
+          <span class="page-info">Showing 1-5 of 48</span>
+          <div class="page-controls">
+            <button disabled data-action="prev-page">Prev</button>
+            <button class="is-active" data-page-num="1">1</button>
+            <button data-page-num="2">2</button>
+            <button data-page-num="3">3</button>
+            <button data-action="next-page">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div class="modal-overlay" data-modal="add-member">
+      <div class="modal-dialog">
+        <h3 class="modal-title">Add Team Member</h3>
+        <form data-form="add-member">
+          <div class="form-group">
+            <label for="member-name">Full Name</label>
+            <input type="text" id="member-name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="member-email">Email</label>
+            <input type="email" id="member-email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="member-role">Role</label>
+            <select id="member-role" name="role">
+              <option value="engineer">Engineer</option>
+              <option value="designer">Designer</option>
+              <option value="pm">Product Manager</option>
+              <option value="lead">Team Lead</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" data-action="close-modal">Cancel</button>
+            <button type="submit" class="btn-primary">Add Member</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container"></div>
+  </div>
+
+  <script>
+    // Toggle user menu
+    document.querySelector('[data-action="toggle-menu"]').addEventListener('click', () => {
+      document.querySelector('.dropdown-panel').classList.toggle('is-open');
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.user-menu')) {
+        document.querySelector('.dropdown-panel').classList.remove('is-open');
+      }
+    });
+
+    // Sort table columns
+    document.querySelectorAll('th[data-sort]').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.sort;
+        const tbody = document.querySelector('.data-section tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const idx = Array.from(th.parentElement.children).indexOf(th);
+        const asc = th.getAttribute('aria-sort') !== 'ascending';
+
+        rows.sort((a, b) => {
+          const aVal = a.children[idx].textContent.trim();
+          const bVal = b.children[idx].textContent.trim();
+          return asc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        });
+
+        th.parentElement.querySelectorAll('th').forEach(h => h.removeAttribute('aria-sort'));
+        th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+        rows.forEach(r => tbody.appendChild(r));
+      });
+    });
+
+    // Search filter
+    document.querySelector('[data-action="search"]').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      document.querySelectorAll('.data-section tbody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+      });
+    });
+
+    // Edit member buttons
+    document.querySelectorAll('[data-action="edit-member"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.memberId;
+        showToast(`Editing member #${id}`);
+      });
+    });
+
+    // Modal open/close
+    function openModal(name) {
+      document.querySelector(`[data-modal="${name}"]`).classList.add('is-visible');
+    }
+    function closeModal(name) {
+      document.querySelector(`[data-modal="${name}"]`).classList.remove('is-visible');
+    }
+    document.querySelectorAll('[data-action="close-modal"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.modal-overlay').classList.remove('is-visible');
+      });
+    });
+
+    // Form submission
+    document.querySelector('[data-form="add-member"]').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(e.target);
+      showToast(`Added ${data.get('name')} as ${data.get('role')}`);
+      e.target.reset();
+      closeModal('add-member');
+    });
+
+    // Toast
+    function showToast(message) {
+      const container = document.querySelector('.toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast-message';
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Pagination
+    document.querySelectorAll('.page-controls button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        document.querySelectorAll('.page-controls button').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        showToast(`Navigated to page ${btn.dataset.pageNum || btn.textContent}`);
+      });
+    });
+  </script>
+</body>
+</html>
