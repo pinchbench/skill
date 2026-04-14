@@ -77,9 +77,13 @@ def grade(transcript: list, workspace_path: str) -> dict:
     lines = [l.strip() for l in content.splitlines() if l.strip()]
     full_text = content.lower()
 
-    # Helper to extract numbers from text
+    # Helper to extract numbers from text.
+    # Strips leading list markers ("1. ", "2) ", etc.) so that agents which
+    # number their answers ("1. 5705") don't have the line prefix returned
+    # instead of the actual value.
     def extract_number(text):
-        numbers = re.findall(r'[\d,]+', text)
+        cleaned = re.sub(r'^\s*\d+[.)]\s+', '', text)
+        numbers = re.findall(r'[\d,]+', cleaned)
         for n in numbers:
             val = int(n.replace(',', ''))
             if val > 0:
