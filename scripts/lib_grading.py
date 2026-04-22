@@ -4,6 +4,7 @@ PinchBench grading engine.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -18,6 +19,38 @@ from lib_tasks import Task
 
 
 logger = logging.getLogger(__name__)
+
+JUDGE_CACHE_DIR = Path(".judge_cache")
+
+
+def _cache_key(task_id: str, transcript: list) -> str:
+    """Generate cache key from task ID and transcript."""
+    transcript_str = json.dumps(transcript, sort_keys=True)
+    hash_hex = hashlib.sha256(transcript_str.encode()).hexdigest()[:16]
+    return f"{task_id}_{hash_hex}"
+
+
+def _get_cached_grade(task_id: str, transcript: list) -> dict | None:
+    """Retrieve cached grade result if available."""
+    key = _cache_key(task_id, transcript)
+    cache_path = JUDGE_CACHE_DIR / f"{key}.json"
+    if cache_path.exists():
+        try:
+            return json.loads(cache_path.read_text())
+        except (json.JSONDecodeError, OSError):
+            return None
+    return None
+
+
+def _save_grade_to_cache(task_id: str, transcript: list, grade: GradeResult):
+    """Save grade result to cache for future reruns."""
+    key = _cache_key(task_id, transcript)
+    JUDGE_CACHE_DIR.mkdir(exist_ok=True)
+    cache_path = JUDGE_CACHE_DIR / f"{key}.json"
+    try:
+        cache_path.write_text(json.dumps(grade.to_dict(), indent=2))
+    except OSError:
+        pass  # Cache write failure is non-fatal
 
 
 DEFAULT_JUDGE_MODEL = "openrouter/anthropic/claude-opus-4.5"
@@ -55,6 +88,7 @@ def grade_task(
     judge_timeout_seconds: float = DEFAULT_JUDGE_TIMEOUT_SECONDS,
     judge_backend: str = "openclaw",
     verbose: bool = False,
+    use_judge_cache: bool = True,
 ) -> GradeResult:
     grading_type = task.grading_type
     if verbose:
@@ -76,6 +110,7 @@ def grade_task(
             judge_backend=judge_backend,
             skill_dir=skill_dir,
             verbose=verbose,
+            use_judge_cache=use_judge_cache,
         )
         if verbose:
             logger.info("   [VERBOSE] LLM judge breakdown: %s", result.breakdown)
@@ -91,6 +126,7 @@ def grade_task(
             judge_backend=judge_backend,
             skill_dir=skill_dir,
             verbose=verbose,
+            use_judge_cache=use_judge_cache,
         )
         return _combine_grades(task, auto_result, llm_result)
     raise ValueError(f"Unknown grading type: {grading_type}")
@@ -188,9 +224,25 @@ def _grade_llm_judge(
     judge_backend: str = "openclaw",
     skill_dir: Optional[Path] = None,
     verbose: bool = False,
+    use_judge_cache: bool = True,
 ) -> GradeResult:
     transcript = execution_result.get("transcript", [])
     execution_status = execution_result.get("status", "unknown")
+
+    # Check cache first
+    if use_judge_cache:
+        cached = _get_cached_grade(task.task_id, transcript)
+        if cached:
+            if verbose:
+                logger.info("   [VERBOSE] Using cached judge result for %s", task.task_id)
+            return GradeResult(
+                task_id=cached["task_id"],
+                score=cached["score"],
+                max_score=cached["max_score"],
+                grading_type=cached["grading_type"],
+                breakdown=cached["breakdown"],
+                notes=cached["notes"],
+            )
 
     if not transcript and execution_status != "success":
         if verbose:
@@ -304,7 +356,7 @@ def _grade_llm_judge(
             task.task_id,
             raw_parsed,
         )
-    return GradeResult(
+    grade = GradeResult(
         task_id=task.task_id,
         score=float(total) if total is not None else 0.0,
         max_score=1.0,
@@ -312,6 +364,12 @@ def _grade_llm_judge(
         breakdown=_normalize_score_dict(breakdown),
         notes=str(notes) if notes is not None else "",
     )
+    
+    # Save to cache if enabled
+    if use_judge_cache:
+        _save_grade_to_cache(task.task_id, transcript, grade)
+    
+    return grade
 
 
 def _combine_grades(task: Task, auto_result: GradeResult, llm_result: GradeResult) -> GradeResult:

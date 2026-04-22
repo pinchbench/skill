@@ -22,8 +22,9 @@ import statistics
 import subprocess
 import sys
 import time
+from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 from lib_agent import (
     cleanup_agent_sessions,
@@ -33,7 +34,7 @@ from lib_agent import (
     slugify_model,
     validate_openrouter_model,
 )
-from lib_grading import GradeResult, grade_task
+from lib_grading import DEFAULT_JUDGE_TIMEOUT_SECONDS, GradeResult, grade_task
 from lib_tasks import Task, TaskLoader
 
 
@@ -269,6 +270,16 @@ def _parse_args() -> argparse.Namespace:
         type=float,
         default=-0.5,
         help="Slope (%%/run) below which regression is flagged (default: -0.5)",
+    )
+    parser.add_argument(
+        "--no-parallel-judge",
+        action="store_true",
+        help="Disable parallel judge execution (grade synchronously after each task)",
+    )
+    parser.add_argument(
+        "--no-judge-cache",
+        action="store_true",
+        help="Disable judge response caching (forces fresh evaluation)",
     )
     args = parser.parse_args()
 
@@ -842,7 +853,8 @@ def main():
                 }
             try:
                 grade_kwargs = dict(
-                    task=task, execution_result=result, skill_dir=skill_dir, verbose=args.verbose
+                    task=task, execution_result=result, skill_dir=skill_dir, verbose=args.verbose,
+                            use_judge_cache=not args.no_judge_cache,
                 )
                 if args.judge:
                     grade_kwargs["judge_model"] = args.judge
