@@ -22,8 +22,9 @@ import statistics
 import subprocess
 import sys
 import time
+from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 from lib_agent import (
     cleanup_agent_sessions,
@@ -33,7 +34,7 @@ from lib_agent import (
     slugify_model,
     validate_openrouter_model,
 )
-from lib_grading import GradeResult, grade_task
+from lib_grading import DEFAULT_JUDGE_TIMEOUT_SECONDS, GradeResult, grade_task
 from lib_tasks import Task, TaskLoader
 
 
@@ -269,6 +270,16 @@ def _parse_args() -> argparse.Namespace:
         type=float,
         default=-0.5,
         help="Slope (%%/run) below which regression is flagged (default: -0.5)",
+    )
+    parser.add_argument(
+        "--no-parallel-judge",
+        action="store_true",
+        help="Disable parallel judge execution (grade synchronously after each task)",
+    )
+    parser.add_argument(
+        "--no-judge-cache",
+        action="store_true",
+        help="Disable judge response caching (forces fresh evaluation)",
     )
     args = parser.parse_args()
 
@@ -799,74 +810,346 @@ def main():
         except OSError:
             pass
 
-    for i, task in enumerate(tasks_to_run, 1):
-        task_grades = []
-        task_results = []
-        for run_index in range(runs_per_task):
-            logger.info("\n%s", "=" * 80)
-            logger.info(
-                "📋 Task %s/%s (Run %s/%s)",
-                i,
-                len(tasks_to_run),
-                run_index + 1,
-                runs_per_task,
-            )
-            logger.info("%s", "=" * 80)
-            execution_error = None
-            try:
-                result = execute_openclaw_task(
-                    task=task,
-                    agent_id=agent_id,
-                    model_id=args.model,
-                    run_id=f"{run_id}-{run_index + 1}",
-                    timeout_multiplier=args.timeout_multiplier,
-                    skill_dir=skill_dir,
-                    output_dir=Path(args.output_dir) / f"{run_id}_transcripts",
-                    verbose=args.verbose,
-                )
-            except Exception as exc:
-                execution_error = str(exc)
-                logger.warning("Task execution failed for %s, continuing: %s", task.task_id, exc)
-                result = {
-                    "agent_id": agent_id,
-                    "task_id": task.task_id,
-                    "status": "error",
-                    "transcript": [],
-                    "usage": {},
-                    "workspace": "",
-                    "exit_code": -1,
-                    "timed_out": False,
-                    "execution_time": 0.0,
-                    "stdout": "",
-                    "stderr": execution_error,
-                }
-            try:
-                grade_kwargs = dict(
-                    task=task, execution_result=result, skill_dir=skill_dir, verbose=args.verbose
-                )
-                if args.judge:
-                    grade_kwargs["judge_model"] = args.judge
-                    grade_kwargs["judge_backend"] = "api"
-                grade = grade_task(**grade_kwargs)
-            except Exception as exc:
-                if execution_error:
-                    note = f"Execution failed: {execution_error}; Grading failed: {exc}"
-                else:
-                    note = f"Grading failed: {exc}"
-                logger.warning("Task grading failed for %s, continuing: %s", task.task_id, exc)
-                grade = GradeResult(
-                    task_id=task.task_id,
-                    score=0.0,
-                    max_score=1.0,
-                    grading_type=task.grading_type,
-                    breakdown={},
-                    notes=note,
-                )
-            task_grades.append(grade)
-            task_results.append(result)
-            results.append(result)
+    # Phase 1: Execute all tasks
+    task_execution_map = {}  # Maps task_id -> list of (task, result) tuples for each run
+    
+    # Initialize judge executor for parallel grading
+    judge_executor: Optional[ThreadPoolExecutor] = None
+    if not args.no_parallel_judge:
+        judge_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="judge")
+        logger.info("🚀 Parallel judge execution enabled")
+    else:
+        logger.info("⏸️  Parallel judge execution disabled (--no-parallel-judge)")
 
-            # Log score immediately after grading
+    # Track pending grade from previous run
+    pending_grade: Optional[Tuple[str, List, List, int, Future]] = None
+
+    try:
+        for i, task in enumerate(tasks_to_run, 1):
+            task_grades = []
+            task_results = []
+            for run_index in range(runs_per_task):
+                logger.info("\n%s", "=" * 80)
+                logger.info(
+                    "📋 Task %s/%s (Run %s/%s)",
+                    i,
+                    len(tasks_to_run),
+                    run_index + 1,
+                    runs_per_task,
+                )
+                logger.info("%s", "=" * 80)
+                
+                # Process pending grade from previous run
+                if pending_grade:
+                    prev_task_id, prev_grades, prev_results, prev_run_idx, future = pending_grade
+                    try:
+                        grade = future.result(timeout=DEFAULT_JUDGE_TIMEOUT_SECONDS)
+                        prev_grades.append(grade)
+                        
+                        score_pct = grade.score / grade.max_score * 100 if grade.max_score > 0 else 0
+                        status_emoji = (
+                            "✅" if grade.score >= grade.max_score else "⚠️" if grade.score > 0 else "❌"
+                        )
+                        logger.info(
+                            "%s Task %s (run %d, background): %.1f/%.1f (%.0f%%) - %s",
+                            status_emoji,
+                            prev_task_id,
+                            prev_run_idx + 1,
+                            grade.score,
+                            grade.max_score,
+                            score_pct,
+                            grade.grading_type,
+                        )
+                        if grade.notes:
+                            logger.info("   Notes: %s", grade.notes[:200])
+                        
+                        # If last run of previous task, compute aggregates
+                        if len(prev_grades) == runs_per_task:
+                            task_scores = [g.score for g in prev_grades]
+                            grades_by_task_id[prev_task_id] = {
+                                "runs": [g.to_dict() for g in prev_grades],
+                                "mean": statistics.mean(task_scores),
+                                "std": statistics.stdev(task_scores) if len(task_scores) > 1 else 0.0,
+                                "min": min(task_scores),
+                                "max": max(task_scores),
+                            }
+
+                            all_runs_missing_transcript = all(
+                                not run_result.get("transcript") for run_result in prev_results
+                            )
+                            if (
+                                prev_task_id == sanity_task_id
+                                and grades_by_task_id[prev_task_id]["mean"] == 0.0
+                                and not args.no_fail_fast
+                                and not all_runs_missing_transcript
+                            ):
+                                logger.error(
+                                    "🚨 FAIL FAST: Sanity check (%s) scored 0%%. Aborting benchmark run.",
+                                    sanity_task_id,
+                                )
+                                sys.exit(3)
+                            if prev_task_id == sanity_task_id and grades_by_task_id[prev_task_id]["mean"] == 0.0:
+                                if all_runs_missing_transcript:
+                                    logger.warning(
+                                        "⚠️ Sanity check scored 0%% but transcripts missing; skipping fail-fast."
+                                    )
+
+                            _write_incremental_results()
+                            
+                    except Exception as exc:
+                        logger.warning("Background grade failed for %s (run %d): %s", 
+                                     prev_task_id, prev_run_idx + 1, exc)
+                        grade = GradeResult(
+                            task_id=prev_task_id,
+                            score=0.0,
+                            max_score=1.0,
+                            grading_type="error",
+                            breakdown={},
+                            notes=f"Background grading failed: {exc}",
+                        )
+                        prev_grades.append(grade)
+                    pending_grade = None
+                
+                execution_error = None
+                try:
+                    result = execute_openclaw_task(
+                        task=task,
+                        agent_id=agent_id,
+                        model_id=args.model,
+                        run_id=f"{run_id}-{run_index + 1}",
+                        timeout_multiplier=args.timeout_multiplier,
+                        skill_dir=skill_dir,
+                        output_dir=Path(args.output_dir) / f"{run_id}_transcripts",
+                        verbose=args.verbose,
+                    )
+                except Exception as exc:
+                    execution_error = str(exc)
+                    logger.warning("Task execution failed for %s, continuing: %s", task.task_id, exc)
+                    result = {
+                        "agent_id": agent_id,
+                        "task_id": task.task_id,
+                        "status": "error",
+                        "transcript": [],
+                        "usage": {},
+                        "workspace": "",
+                        "exit_code": -1,
+                        "timed_out": False,
+                        "execution_time": 0.0,
+                        "stdout": "",
+                        "stderr": execution_error,
+                    }
+                
+                task_results.append(result)
+                results.append(result)
+                
+                # Decide sync vs async grading
+                is_last_run = (run_index == runs_per_task - 1) and (i == len(tasks_to_run))
+                
+                if args.no_parallel_judge or is_last_run:
+                    # Synchronous grading
+                    try:
+                        grade_kwargs = dict(
+                            task=task, execution_result=result, skill_dir=skill_dir, verbose=args.verbose
+                        )
+                        if args.judge:
+                            grade_kwargs["judge_model"] = args.judge
+                            grade_kwargs["judge_backend"] = "api"
+                        grade = grade_task(**grade_kwargs)
+                    except Exception as exc:
+                        if execution_error:
+                            note = f"Execution failed: {execution_error}; Grading failed: {exc}"
+                        else:
+                            note = f"Grading failed: {exc}"
+                        logger.warning("Task grading failed for %s, continuing: %s", task.task_id, exc)
+                        grade = GradeResult(
+                            task_id=task.task_id,
+                            score=0.0,
+                            max_score=1.0,
+                            grading_type=task.grading_type,
+                            breakdown={},
+                            notes=note,
+                        )
+                    task_grades.append(grade)
+
+                    # Log score immediately
+                    score_pct = grade.score / grade.max_score * 100 if grade.max_score > 0 else 0
+                    status_emoji = (
+                        "✅" if grade.score >= grade.max_score else "⚠️" if grade.score > 0 else "❌"
+                    )
+                    logger.info(
+                        "%s Task %s: %.1f/%.1f (%.0f%%) - %s",
+                        status_emoji,
+                        task.task_id,
+                        grade.score,
+                        grade.max_score,
+                        score_pct,
+                        grade.grading_type,
+                    )
+                    if grade.notes:
+                        logger.info("   Notes: %s", grade.notes[:200])
+                else:
+                    # Async grading - submit to background
+                    logger.info("⏭️  Submitting grading to background thread...")
+                    grade_kwargs = dict(
+                        task=task, execution_result=result, skill_dir=skill_dir, verbose=args.verbose
+                    )
+                    if args.judge:
+                        grade_kwargs["judge_model"] = args.judge
+                        grade_kwargs["judge_backend"] = "api"
+                    
+                    future = judge_executor.submit(grade_task, **grade_kwargs)
+                    pending_grade = (task.task_id, task_grades, task_results, run_index, future)
+
+            # If synchronous mode, compute aggregates now
+            if args.no_parallel_judge:
+                task_scores = [grade.score for grade in task_grades]
+                grades_by_task_id[task.task_id] = {
+                    "runs": [grade.to_dict() for grade in task_grades],
+                    "mean": statistics.mean(task_scores),
+                    "std": statistics.stdev(task_scores) if len(task_scores) > 1 else 0.0,
+                    "min": min(task_scores),
+                    "max": max(task_scores),
+                }
+
+                all_runs_missing_transcript = all(
+                    not run_result.get("transcript") for run_result in task_results
+                )
+                if (
+                    task.task_id == sanity_task_id
+                    and grades_by_task_id[task.task_id]["mean"] == 0.0
+                    and not args.no_fail_fast
+                    and not all_runs_missing_transcript
+                ):
+                    logger.error(
+                        "🚨 FAIL FAST: Sanity check (%s) scored 0%%. Aborting benchmark run.",
+                        sanity_task_id,
+                    )
+                    sys.exit(3)
+                if task.task_id == sanity_task_id and grades_by_task_id[task.task_id]["mean"] == 0.0:
+                    if all_runs_missing_transcript:
+                        logger.warning(
+                            "⚠️ Sanity check scored 0%% but transcripts missing; skipping fail-fast."
+                        )
+
+                _write_incremental_results()
+        
+        # Process any remaining pending grade
+        if pending_grade:
+            prev_task_id, prev_grades, prev_results, prev_run_idx, future = pending_grade
+            try:
+                grade = future.result(timeout=DEFAULT_JUDGE_TIMEOUT_SECONDS)
+                prev_grades.append(grade)
+                
+                score_pct = grade.score / grade.max_score * 100 if grade.max_score > 0 else 0
+                status_emoji = (
+                    "✅" if grade.score >= grade.max_score else "⚠️" if grade.score > 0 else "❌"
+                )
+                logger.info(
+                    "%s Task %s (run %d, final): %.1f/%.1f (%.0f%%) - %s",
+                    status_emoji,
+                    prev_task_id,
+                    prev_run_idx + 1,
+                    grade.score,
+                    grade.max_score,
+                    score_pct,
+                    grade.grading_type,
+                )
+                if grade.notes:
+                    logger.info("   Notes: %s", grade.notes[:200])
+                
+                task_scores = [g.score for g in prev_grades]
+                grades_by_task_id[prev_task_id] = {
+                    "runs": [g.to_dict() for g in prev_grades],
+                    "mean": statistics.mean(task_scores),
+                    "std": statistics.stdev(task_scores) if len(task_scores) > 1 else 0.0,
+                    "min": min(task_scores),
+                    "max": max(task_scores),
+                }
+                _write_incremental_results()
+                    
+            except Exception as exc:
+                logger.warning("Final background grade failed for %s: %s", prev_task_id, exc)
+    finally:
+        # Cleanup executor
+        if judge_executor:
+            logger.info("🧹 Shutting down judge executor...")
+            judge_executor.shutdown(wait=True)
+
+    logger.info("\n%s", "=" * 80)
+    logger.info("📊 Phase 1 complete: All tasks executed. Starting grading phase...")
+    logger.info("%s", "=" * 80)
+    
+    # Phase 2: Grade in batches
+    batch_size = args.batch_size
+    
+    # Flatten all task data across all runs
+    all_task_data = []
+    for task_id in task_execution_map:
+        all_task_data.extend(task_execution_map[task_id])
+    
+    # Process in batches
+    for batch_start in range(0, len(all_task_data), batch_size):
+        batch_end = min(batch_start + batch_size, len(all_task_data))
+        batch_items = all_task_data[batch_start:batch_end]
+        
+        batch_tasks = [item["task"] for item in batch_items]
+        batch_results = [item["result"] for item in batch_items]
+        
+        logger.info(
+            "\n📊 Grading batch %d-%d of %d total task runs...",
+            batch_start + 1,
+            batch_end,
+            len(all_task_data),
+        )
+        
+        try:
+            grade_kwargs = dict(
+                tasks=batch_tasks,
+                execution_results=batch_results,
+                skill_dir=skill_dir,
+                verbose=args.verbose,
+            )
+            if args.judge:
+                grade_kwargs["judge_model"] = args.judge
+                grade_kwargs["judge_backend"] = "api"
+            
+            batch_grades = grade_tasks_batch(**grade_kwargs)
+        except Exception as exc:
+            logger.warning("Batch grading failed, using individual fallback: %s", exc)
+            # Fallback to individual grading
+            batch_grades = []
+            for item in batch_items:
+                task = item["task"]
+                result = item["result"]
+                try:
+                    individual_kwargs = dict(
+                        task=task,
+                        execution_result=result,
+                        skill_dir=skill_dir,
+                        verbose=args.verbose,
+                        use_judge_cache=not args.no_judge_cache,
+                    )
+                    if args.judge:
+                        individual_kwargs["judge_model"] = args.judge
+                        individual_kwargs["judge_backend"] = "api"
+                    grade = grade_task(**individual_kwargs)
+                except Exception as inner_exc:
+                    logger.warning("Individual grading also failed for %s: %s", task.task_id, inner_exc)
+                    grade = GradeResult(
+                        task_id=task.task_id,
+                        score=0.0,
+                        max_score=1.0,
+                        grading_type=task.grading_type,
+                        breakdown={},
+                        notes=f"Grading failed: {inner_exc}",
+                    )
+                batch_grades.append(grade)
+        
+        # Store grades back into the items
+        for item, grade in zip(batch_items, batch_grades):
+            item["grade"] = grade
+            
+            # Log score
             score_pct = grade.score / grade.max_score * 100 if grade.max_score > 0 else 0
             status_emoji = (
                 "✅" if grade.score >= grade.max_score else "⚠️" if grade.score > 0 else "❌"
@@ -874,7 +1157,7 @@ def main():
             logger.info(
                 "%s Task %s: %.1f/%.1f (%.0f%%) - %s",
                 status_emoji,
-                task.task_id,
+                item["task"].task_id,
                 grade.score,
                 grade.max_score,
                 score_pct,
@@ -882,19 +1165,26 @@ def main():
             )
             if grade.notes:
                 logger.info("   Notes: %s", grade.notes[:200])
-
+    
+    # Phase 3: Aggregate grades by task
+    for task_id, items in task_execution_map.items():
+        task_grades = [item["grade"] for item in items]
         task_scores = [grade.score for grade in task_grades]
-        grades_by_task_id[task.task_id] = {
+        
+        grades_by_task_id[task_id] = {
             "runs": [grade.to_dict() for grade in task_grades],
             "mean": statistics.mean(task_scores),
             "std": statistics.stdev(task_scores) if len(task_scores) > 1 else 0.0,
             "min": min(task_scores),
             "max": max(task_scores),
         }
-
+        
+        # Fail-fast check for sanity task
+        task = items[0]["task"]  # Get task object from first item
         all_runs_missing_transcript = all(
-            not run_result.get("transcript") for run_result in task_results
+            not item["result"].get("transcript") for item in items
         )
+        
         if (
             task.task_id == sanity_task_id
             and grades_by_task_id[task.task_id]["mean"] == 0.0
@@ -911,10 +1201,9 @@ def main():
                 logger.warning(
                     "⚠️ Sanity check scored 0%% but transcripts were missing for all runs; skipping fail-fast as likely infrastructure/logging issue."
                 )
-
-        # Incremental write: update result JSON after each task so partial
-        # results are available while the benchmark is still running.
-        _write_incremental_results()
+    
+    # Write final incremental results
+    _write_incremental_results()
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

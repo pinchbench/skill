@@ -304,7 +304,8 @@ def _grade_llm_judge(
             task.task_id,
             raw_parsed,
         )
-    return GradeResult(
+    
+    grade = GradeResult(
         task_id=task.task_id,
         score=float(total) if total is not None else 0.0,
         max_score=1.0,
@@ -312,6 +313,12 @@ def _grade_llm_judge(
         breakdown=_normalize_score_dict(breakdown),
         notes=str(notes) if notes is not None else "",
     )
+    
+    # Save to cache if enabled
+    if use_judge_cache:
+        _save_grade_to_cache(task.task_id, transcript, grade)
+    
+    return grade
 
 
 def _combine_grades(task: Task, auto_result: GradeResult, llm_result: GradeResult) -> GradeResult:
