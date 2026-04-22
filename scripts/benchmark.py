@@ -34,7 +34,7 @@ from lib_agent import (
     slugify_model,
     validate_openrouter_model,
 )
-from lib_grading import DEFAULT_JUDGE_TIMEOUT_SECONDS, GradeResult, grade_task
+from lib_grading import DEFAULT_JUDGE_TIMEOUT_SECONDS, GradeResult, grade_task, grade_tasks_batch
 from lib_tasks import Task, TaskLoader
 
 

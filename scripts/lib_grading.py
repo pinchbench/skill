@@ -314,10 +314,6 @@ def _grade_llm_judge(
         notes=str(notes) if notes is not None else "",
     )
     
-    # Save to cache if enabled
-    if use_judge_cache:
-        _save_grade_to_cache(task.task_id, transcript, grade)
-    
     return grade
 
 
