@@ -254,6 +254,13 @@ def _parse_args() -> argparse.Namespace:
         help="Continue running all tasks even if sanity check scores 0%%",
     )
     parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=5,
+        metavar="N",
+        help="Number of tasks to grade in a single batch LLM call (default: 5)",
+    )
+    parser.add_argument(
         "--trend",
         action="store_true",
         help="Run trend analysis after benchmark completes (requires ≥2 runs in output dir)",
