@@ -96,6 +96,357 @@ def grade_task(
     raise ValueError(f"Unknown grading type: {grading_type}")
 
 
+def grade_tasks_batch(
+    *,
+    tasks: List[Task],
+    execution_results: List[Dict[str, Any]],
+    skill_dir: Path,
+    judge_model: str = DEFAULT_JUDGE_MODEL,
+    judge_agent_prefix: str = DEFAULT_JUDGE_AGENT_PREFIX,
+    judge_timeout_seconds: float = DEFAULT_JUDGE_TIMEOUT_SECONDS,
+    judge_backend: str = "openclaw",
+    verbose: bool = False,
+) -> List[GradeResult]:
+    """
+    Grade multiple tasks in a single batch.
+    
+    For tasks requiring LLM judge, this batches them into a single API call
+    to reduce overhead. Automated grading is still done individually (it's fast).
+    
+    Returns a list of GradeResults in the same order as the input tasks.
+    """
+    if len(tasks) != len(execution_results):
+        raise ValueError(f"Mismatch: {len(tasks)} tasks but {len(execution_results)} results")
+    
+    if not tasks:
+        return []
+    
+    results: List[Optional[GradeResult]] = [None] * len(tasks)
+    
+    # Separate tasks by grading type
+    automated_indices = []
+    llm_judge_indices = []
+    hybrid_indices = []
+    
+    for i, task in enumerate(tasks):
+        if task.grading_type == "automated":
+            automated_indices.append(i)
+        elif task.grading_type == "llm_judge":
+            llm_judge_indices.append(i)
+        elif task.grading_type == "hybrid":
+            hybrid_indices.append(i)
+        else:
+            # Unknown type - grade individually and let it raise
+            results[i] = grade_task(
+                task=task,
+                execution_result=execution_results[i],
+                skill_dir=skill_dir,
+                judge_model=judge_model,
+                judge_backend=judge_backend,
+                verbose=verbose,
+            )
+    
+    # Grade automated tasks individually (they're fast)
+    for i in automated_indices:
+        results[i] = _grade_automated(tasks[i], execution_results[i], skill_dir=skill_dir, verbose=verbose)
+    
+    # Batch LLM judge tasks
+    if llm_judge_indices:
+        llm_tasks = [tasks[i] for i in llm_judge_indices]
+        llm_results = [execution_results[i] for i in llm_judge_indices]
+        batch_grades = _batch_grade_llm_judge(
+            tasks=llm_tasks,
+            execution_results=llm_results,
+            judge_model=judge_model,
+            judge_agent_prefix=judge_agent_prefix,
+            judge_timeout_seconds=judge_timeout_seconds * len(llm_tasks),  # Scale timeout
+            judge_backend=judge_backend,
+            skill_dir=skill_dir,
+            verbose=verbose,
+        )
+        for idx, grade in zip(llm_judge_indices, batch_grades):
+            results[idx] = grade
+    
+    # Hybrid tasks: automated is fast, batch the LLM parts
+    if hybrid_indices:
+        # First do automated grading for all hybrid tasks
+        auto_grades = {}
+        for i in hybrid_indices:
+            auto_grades[i] = _grade_automated(tasks[i], execution_results[i], skill_dir=skill_dir, verbose=verbose)
+        
+        # Batch the LLM judge part
+        hybrid_tasks = [tasks[i] for i in hybrid_indices]
+        hybrid_results = [execution_results[i] for i in hybrid_indices]
+        llm_grades = _batch_grade_llm_judge(
+            tasks=hybrid_tasks,
+            execution_results=hybrid_results,
+            judge_model=judge_model,
+            judge_agent_prefix=judge_agent_prefix,
+            judge_timeout_seconds=judge_timeout_seconds * len(hybrid_tasks),
+            judge_backend=judge_backend,
+            skill_dir=skill_dir,
+            verbose=verbose,
+        )
+        
+        # Combine auto + llm for each hybrid task
+        for idx, llm_grade in zip(hybrid_indices, llm_grades):
+            results[idx] = _combine_grades(tasks[idx], auto_grades[idx], llm_grade)
+    
+    # Verify all results filled
+    for i, result in enumerate(results):
+        if result is None:
+            raise RuntimeError(f"Bug: no grade computed for task index {i} ({tasks[i].task_id})")
+    
+    return results  # type: ignore
+
+
+def _batch_grade_llm_judge(
+    *,
+    tasks: List[Task],
+    execution_results: List[Dict[str, Any]],
+    judge_model: str,
+    judge_agent_prefix: str,
+    judge_timeout_seconds: float,
+    judge_backend: str = "openclaw",
+    skill_dir: Optional[Path] = None,
+    verbose: bool = False,
+) -> List[GradeResult]:
+    """
+    Grade multiple tasks with a single LLM judge call.
+    
+    Builds a combined prompt with all tasks and parses a JSON array response.
+    Falls back to individual grading if batch parsing fails.
+    """
+    if not tasks:
+        return []
+    
+    # Build combined prompt
+    prompt_parts = [
+        "You are grading multiple benchmark tasks. For each task, evaluate the agent's performance against the rubric.",
+        "",
+        "Respond with a JSON array containing one object per task, in order:",
+        "```json",
+        "[",
+        '  {"task_id": "task_name", "scores": {"criterion1": 0.8, "criterion2": 1.0}, "total": 0.85, "notes": "Brief explanation"},',
+        "  ...",
+        "]",
+        "```",
+        "",
+        "IMPORTANT: Return ONLY the JSON array. Ensure 'total' is a float between 0.0 and 1.0.",
+        "",
+        "=" * 60,
+        "",
+    ]
+    
+    for i, (task, result) in enumerate(zip(tasks, execution_results)):
+        transcript = result.get("transcript", [])
+        transcript_summary = _summarize_transcript(transcript)
+        workspace_content = _read_workspace_files(result.get("workspace", ""))
+        rubric = task.llm_judge_rubric or _format_grading_criteria(task)
+        
+        prompt_parts.extend([
+            f"## Task {i + 1}: {task.task_id}",
+            f"**Name:** {task.name}",
+            f"**Category:** {task.category}",
+            "",
+            "**Rubric:**",
+            rubric if rubric else "(No specific rubric provided)",
+            "",
+            "**Agent Transcript:**",
+            transcript_summary[:3000] if transcript_summary else "(Empty transcript - task may have failed)",
+            "",
+        ])
+        if workspace_content:
+            prompt_parts.extend([
+                "**Workspace Files:**",
+                workspace_content[:1500],
+                "",
+            ])
+        prompt_parts.append("=" * 60)
+        prompt_parts.append("")
+    
+    combined_prompt = "\n".join(prompt_parts)
+    
+    if verbose:
+        logger.info("   [VERBOSE] Batch judge prompt length: %d chars for %d tasks", len(combined_prompt), len(tasks))
+    
+    # Make the API call
+    if judge_backend == "api":
+        judge_result = call_judge_api(
+            prompt=combined_prompt,
+            model=judge_model,
+            timeout_seconds=judge_timeout_seconds,
+        )
+        
+        if judge_result.get("status") != "success":
+            logger.warning("Batch judge API call failed: %s", judge_result.get("error", judge_result.get("status")))
+            # Fall back to individual grading
+            return _fallback_individual_grading(
+                tasks, execution_results, judge_model, judge_agent_prefix,
+                judge_timeout_seconds / len(tasks), judge_backend, skill_dir, verbose
+            )
+        
+        raw_text = judge_result.get("text", "")
+    else:
+        # OpenClaw agent backend
+        judge_skill_dir = skill_dir if skill_dir is not None else Path.cwd()
+        agent_id = _ensure_judge_agent(judge_agent_prefix, judge_model, judge_skill_dir)
+        judge_workspace = Path(f"/tmp/pinchbench/judge/batch_{int(time.time())}")
+        judge_result = run_openclaw_prompt(
+            agent_id=agent_id,
+            prompt=combined_prompt,
+            workspace=judge_workspace,
+            timeout_seconds=judge_timeout_seconds,
+        )
+        
+        if judge_result.get("status") != "success":
+            logger.warning("Batch judge execution failed: %s", judge_result.get("status"))
+            return _fallback_individual_grading(
+                tasks, execution_results, judge_model, judge_agent_prefix,
+                judge_timeout_seconds / len(tasks), judge_backend, skill_dir, verbose
+            )
+        
+        # Extract text from transcript
+        raw_text = ""
+        for entry in judge_result.get("transcript", []):
+            if entry.get("type") == "message":
+                msg = entry.get("message", {})
+                if msg.get("role") == "assistant":
+                    for item in msg.get("content", []):
+                        if item.get("type") == "text":
+                            raw_text += item.get("text", "")
+    
+    # Parse the JSON array response
+    grades = _parse_batch_response(raw_text, tasks, verbose)
+    
+    if len(grades) != len(tasks):
+        logger.warning("Batch response parsing returned %d grades for %d tasks, falling back", len(grades), len(tasks))
+        return _fallback_individual_grading(
+            tasks, execution_results, judge_model, judge_agent_prefix,
+            judge_timeout_seconds / len(tasks), judge_backend, skill_dir, verbose
+        )
+    
+    return grades
+
+
+def _parse_batch_response(raw_text: str, tasks: List[Task], verbose: bool = False) -> List[GradeResult]:
+    """Parse a JSON array response from batch grading."""
+    import re
+    
+    # Try to extract JSON array from the response
+    # Look for code block first
+    json_match = re.search(r"```(?:json)?\s*(\[[\s\S]*?\])\s*```", raw_text)
+    if json_match:
+        json_str = json_match.group(1)
+    else:
+        # Try to find bare JSON array
+        array_match = re.search(r"\[[\s\S]*\]", raw_text)
+        if array_match:
+            json_str = array_match.group(0)
+        else:
+            logger.warning("No JSON array found in batch response")
+            return []
+    
+    try:
+        parsed = json.loads(json_str)
+    except json.JSONDecodeError as exc:
+        logger.warning("Failed to parse batch JSON: %s", exc)
+        return []
+    
+    if not isinstance(parsed, list):
+        logger.warning("Batch response is not a list: %s", type(parsed))
+        return []
+    
+    if len(parsed) != len(tasks):
+        logger.warning("Batch response has %d items but expected %d", len(parsed), len(tasks))
+        # Try to match by task_id if lengths differ
+        # For now, just return empty to trigger fallback
+        return []
+    
+    grades = []
+    for i, (item, task) in enumerate(zip(parsed, tasks)):
+        if not isinstance(item, dict):
+            logger.warning("Batch item %d is not a dict", i)
+            grades.append(GradeResult(
+                task_id=task.task_id,
+                score=0.0,
+                max_score=1.0,
+                grading_type="llm_judge",
+                breakdown={},
+                notes="Batch parsing failed for this item",
+            ))
+            continue
+        
+        # Extract score
+        total = item.get("total")
+        if total is None:
+            total = item.get("score", 0.0)
+        try:
+            total = float(total)
+        except (TypeError, ValueError):
+            total = 0.0
+        
+        # Clamp to valid range
+        total = max(0.0, min(1.0, total))
+        
+        # Extract breakdown scores
+        scores = item.get("scores", {})
+        if not isinstance(scores, dict):
+            scores = {}
+        
+        notes = item.get("notes", "") or ""
+        
+        grades.append(GradeResult(
+            task_id=task.task_id,
+            score=total,
+            max_score=1.0,
+            grading_type="llm_judge",
+            breakdown=_normalize_score_dict(scores),
+            notes=str(notes)[:500],  # Truncate long notes
+        ))
+    
+    return grades
+
+
+def _fallback_individual_grading(
+    tasks: List[Task],
+    execution_results: List[Dict[str, Any]],
+    judge_model: str,
+    judge_agent_prefix: str,
+    judge_timeout_seconds: float,
+    judge_backend: str,
+    skill_dir: Optional[Path],
+    verbose: bool,
+) -> List[GradeResult]:
+    """Fall back to grading tasks individually when batch fails."""
+    logger.info("Falling back to individual grading for %d tasks", len(tasks))
+    grades = []
+    for task, result in zip(tasks, execution_results):
+        try:
+            grade = _grade_llm_judge(
+                task=task,
+                execution_result=result,
+                judge_model=judge_model,
+                judge_agent_prefix=judge_agent_prefix,
+                judge_timeout_seconds=judge_timeout_seconds,
+                judge_backend=judge_backend,
+                skill_dir=skill_dir,
+                verbose=verbose,
+            )
+        except Exception as exc:
+            logger.warning("Individual grading failed for %s: %s", task.task_id, exc)
+            grade = GradeResult(
+                task_id=task.task_id,
+                score=0.0,
+                max_score=1.0,
+                grading_type="llm_judge",
+                breakdown={},
+                notes=f"Grading failed: {exc}",
+            )
+        grades.append(grade)
+    return grades
+
+
 def _grade_automated(
     task: Task,
     execution_result: Dict[str, Any],
