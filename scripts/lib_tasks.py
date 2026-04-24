@@ -80,6 +80,7 @@ class TaskLoader:
         self.tasks_dir = tasks_dir
         self.category_map: Dict[str, str] = {}  # task_id -> category from manifest
         self.categories: List[str] = []  # ordered list of category names
+        self.core_tasks: List[str] = []  # core task IDs for quick benchmark runs
         logger.info(f"Initialized TaskLoader with directory: {tasks_dir}")
 
     def load_all_tasks(self) -> List[Task]:
@@ -141,12 +142,13 @@ class TaskLoader:
     def _parse_categorized_manifest(self, manifest: Dict[str, Any]) -> List[str]:
         """Parse the categorized manifest format and return an ordered task list.
 
-        Populates ``self.category_map`` and ``self.categories``.  Tasks listed
-        in ``run_first`` are placed at the front of the returned list while
-        preserving their category membership.
+        Populates ``self.category_map``, ``self.categories``, and ``self.core_tasks``.
+        Tasks listed in ``run_first`` are placed at the front of the returned list
+        while preserving their category membership.
         """
         run_first: List[str] = manifest.get("run_first", [])
         categories: Dict[str, List[str]] = manifest.get("categories", {})
+        self.core_tasks = manifest.get("core", [])
 
         self.categories = list(categories.keys())
         self.category_map = {}

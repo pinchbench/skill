@@ -37,7 +37,14 @@ from lib_agent import (
     validate_openrouter_model,
 )
 from lib_axiom import init_axiom
-from lib_grading import DEFAULT_JUDGE_TIMEOUT_SECONDS, GradeResult, grade_task
+from lib_grading import (
+    DEFAULT_JUDGE_TIMEOUT_SECONDS,
+    GradeResult,
+    grade_task,
+    set_judge_cache_dir,
+    get_judge_cache_stats,
+    clear_judge_cache,
+)
 from lib_tasks import Task, TaskLoader
 
 
@@ -188,6 +195,11 @@ def _parse_args() -> argparse.Namespace:
         help='Tasks to run: "all", "automated-only", a category name (e.g. "coding"), or comma-separated task IDs',
     )
     parser.add_argument(
+        "--core",
+        action="store_true",
+        help="Run only core tasks (~25 representative tasks for quick benchmarking)",
+    )
+    parser.add_argument(
         "--output-dir",
         default="results",
         help="Results directory",
@@ -260,6 +272,16 @@ def _parse_args() -> argparse.Namespace:
         "--no-parallel-judge",
         action="store_true",
         help="Disable parallel judge execution (grade synchronously after each task)",
+    )
+    parser.add_argument(
+        "--no-judge-cache",
+        action="store_true",
+        help="Disable judge result caching (re-grade even if transcript+rubric unchanged)",
+    )
+    parser.add_argument(
+        "--clear-judge-cache",
+        action="store_true",
+        help="Clear the judge cache before running",
     )
     parser.add_argument(
         "--trend",
@@ -741,6 +763,16 @@ def main():
             logger.error("Upload failed: %s", exc)
             sys.exit(1)
 
+    # Initialize judge cache
+    if not args.no_judge_cache:
+        cache_dir = Path(args.output_dir) / ".judge_cache"
+        set_judge_cache_dir(cache_dir)
+        if args.clear_judge_cache:
+            clear_judge_cache()
+            logger.info("🗑️  Judge cache cleared")
+    else:
+        logger.info("📦 Judge caching disabled")
+    
     logger.info("🔧 Initializing BenchmarkRunner...")
     runner = BenchmarkRunner(tasks_dir)
 
@@ -775,6 +807,16 @@ def main():
     cleanup_agent_sessions(agent_id)
 
     task_ids = _select_task_ids(runner.tasks, args.suite, runner.task_loader.category_map)
+    
+    # Handle --core flag: use core tasks from manifest
+    if args.core:
+        core_task_ids = runner.task_loader.core_tasks
+        if not core_task_ids:
+            logger.warning("⚠️  No core tasks defined in manifest.yaml, running all tasks")
+        else:
+            task_ids = core_task_ids
+            logger.info(f"🎯 Core mode: running {len(core_task_ids)} representative tasks")
+    
     results = []
     grades_by_task_id = {}
     sanity_task_id = "task_sanity"
@@ -1151,6 +1193,19 @@ def main():
     max_score = float(len(grades_by_task_id))  # Each task has max_score of 1.0
     score_pct = (total_score / max_score * 100) if max_score > 0 else 0
     logger.info("📊 Final score: %.2f/%.0f (%.1f%%)", total_score, max_score, score_pct)
+
+    # Log judge cache stats
+    if not args.no_judge_cache:
+        cache_stats = get_judge_cache_stats()
+        if cache_stats["hits"] > 0 or cache_stats["misses"] > 0:
+            hit_rate = cache_stats["hits"] / (cache_stats["hits"] + cache_stats["misses"]) * 100
+            logger.info(
+                "📦 Judge cache: %d hits, %d misses (%.0f%% hit rate, %d entries)",
+                cache_stats["hits"],
+                cache_stats["misses"],
+                hit_rate,
+                cache_stats["entries"],
+            )
 
     logger.info("Saved results to %s", output_path)
     _log_category_summary(task_entries, tasks_by_id, category_order)

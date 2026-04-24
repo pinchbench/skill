@@ -8,9 +8,52 @@
 #
 # The `run_first` list contains tasks that must execute before all others
 # (in the order listed), regardless of which category they belong to.
+#
+# The `core` list defines a smaller subset of representative tasks for quick
+# benchmark runs. Use --core flag to run only these tasks. Selection criteria:
+# - At least one task per category
+# - Prefer automated grading for speed
+# - Include a mix of difficulty levels
+# - Cover key capability areas
 
 run_first:
   - task_sanity
+
+# Core tasks (~25) for quick benchmark runs. ~20% of full suite.
+# Run with: benchmark.py --core
+core:
+  # productivity (2)
+  - task_sanity          # automated - baseline/smoke test
+  - task_calendar        # automated - tool use
+  # research (2)
+  - task_stock           # automated - web search
+  - task_market_research # hybrid - deeper research
+  # writing (2)
+  - task_email           # llm_judge - short form
+  - task_humanizer       # hybrid - text transformation
+  # coding (3)
+  - task_weather         # automated - simple coding
+  - task_shell_command_generator  # automated - command gen
+  - task_multi_file_refactoring   # automated - code changes
+  # analysis (2)
+  - task_summary         # llm_judge - comprehension
+  - task_spreadsheet_summary      # hybrid - data analysis
+  # csv_analysis (2)
+  - task_csv_stock_trend          # hybrid - time series
+  - task_csv_iris_summary         # hybrid - stats
+  # log_analysis (2)
+  - task_log_apache_top_errors    # hybrid - pattern finding
+  - task_log_syslog_boot          # hybrid - system logs
+  # meeting_analysis (2)
+  - task_meeting_tldr             # hybrid - summarization
+  - task_meeting_council_votes    # hybrid - extraction
+  # memory (1)
+  - task_memory          # automated - memory ops
+  # skills (2)
+  - task_files           # automated - file ops
+  - task_skill_search    # automated - skill discovery
+  # integrations (1)
+  - task_gws_email_triage         # hybrid - integration test
 
 categories:
   productivity:
