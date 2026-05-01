@@ -18,9 +18,11 @@ import json
 import logging
 import os
 import re
+import shutil
 import statistics
 import subprocess
 import sys
+import tempfile
 import time
 from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
@@ -652,6 +654,34 @@ def _log_category_summary(
     return category_scores
 
 
+def _snapshot_workspace_for_grading(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """Snapshot the workspace directory so a background grader reads stable files.
+
+    When parallel grading is enabled, the main thread moves on to the next task
+    and calls ``prepare_task_workspace`` which wipes and rebuilds the shared
+    agent workspace.  If the background grader reads the live workspace it will
+    see the *next* task's files instead of the current one's.
+
+    This function copies the workspace tree into an isolated temp directory and
+    returns a shallow copy of *execution_result* whose ``workspace`` key points
+    to the snapshot.  The caller is responsible for cleaning up the temp
+    directory once grading is complete.
+    """
+    workspace_path = execution_result.get("workspace", "")
+    snapshot_result = dict(execution_result)  # shallow copy
+
+    if workspace_path:
+        src = Path(workspace_path)
+        if src.exists() and src.is_dir():
+            snapshot_dir = tempfile.mkdtemp(prefix="pinchbench_grade_snapshot_")
+            shutil.copytree(src, Path(snapshot_dir) / "workspace", dirs_exist_ok=True)
+            snapshot_result["workspace"] = str(Path(snapshot_dir) / "workspace")
+            # Stash the root temp dir so we can clean it up later
+            snapshot_result["_snapshot_tmpdir"] = snapshot_dir
+
+    return snapshot_result
+
+
 def main():
     """Main entry point for the benchmark script."""
     # Determine tasks directory
@@ -822,6 +852,7 @@ def main():
     pending_grade_task: Optional[Task] = None
     pending_grade_result: Optional[Dict[str, Any]] = None
     pending_grade_task_num: int = 0
+    pending_grade_snapshot_dir: Optional[str] = None  # temp dir to clean up after grading
 
     if use_parallel_judge:
         judge_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="judge")
@@ -829,7 +860,7 @@ def main():
 
     def _wait_for_pending_grade() -> None:
         """Wait for any pending background grade to complete and record it."""
-        nonlocal pending_grade_future, pending_grade_task, pending_grade_result, pending_grade_task_num
+        nonlocal pending_grade_future, pending_grade_task, pending_grade_result, pending_grade_task_num, pending_grade_snapshot_dir
         if pending_grade_future is None:
             return
 
@@ -882,6 +913,11 @@ def main():
             "min": min(task_scores),
             "max": max(task_scores),
         }
+
+        # Clean up workspace snapshot temp directory
+        if pending_grade_snapshot_dir:
+            shutil.rmtree(pending_grade_snapshot_dir, ignore_errors=True)
+            pending_grade_snapshot_dir = None
 
         pending_grade_future = None
         pending_grade_task = None
@@ -955,12 +991,19 @@ def main():
             )
 
             if can_parallelize:
+                # Snapshot workspace so the background grader reads stable
+                # files even after the main thread rebuilds the workspace for
+                # the next task.
+                snapshot_result = _snapshot_workspace_for_grading(result)
+                grade_kwargs["execution_result"] = snapshot_result
+
                 # Submit grading to background thread
                 pending_grade_future = judge_executor.submit(grade_task, **grade_kwargs)
                 pending_grade_task = task
                 pending_grade_result = result
                 pending_grade_task_num = i
-                logger.info("   Grading submitted to background thread")
+                pending_grade_snapshot_dir = snapshot_result.get("_snapshot_tmpdir")
+                logger.info("   Grading submitted to background thread (workspace snapshotted)")
                 # Don't wait - continue to next task
                 # Results will be recorded when we call _wait_for_pending_grade()
                 continue
