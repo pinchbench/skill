@@ -18,9 +18,11 @@ import json
 import logging
 import os
 import re
+import shutil
 import statistics
 import subprocess
 import sys
+import tempfile
 import time
 from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
@@ -823,13 +825,15 @@ def main():
     pending_grade_result: Optional[Dict[str, Any]] = None
     pending_grade_task_num: int = 0
 
+    pending_grade_snapshot_dir: Optional[str] = None
+
     if use_parallel_judge:
         judge_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="judge")
         logger.info("Parallel judge execution enabled")
 
     def _wait_for_pending_grade() -> None:
         """Wait for any pending background grade to complete and record it."""
-        nonlocal pending_grade_future, pending_grade_task, pending_grade_result, pending_grade_task_num
+        nonlocal pending_grade_future, pending_grade_task, pending_grade_result, pending_grade_task_num, pending_grade_snapshot_dir
         if pending_grade_future is None:
             return
 
@@ -882,6 +886,14 @@ def main():
             "min": min(task_scores),
             "max": max(task_scores),
         }
+
+        # Clean up workspace snapshot temp directory
+        if pending_grade_snapshot_dir is not None:
+            try:
+                shutil.rmtree(pending_grade_snapshot_dir, ignore_errors=True)
+            except Exception:
+                pass
+            pending_grade_snapshot_dir = None
 
         pending_grade_future = None
         pending_grade_task = None
@@ -955,6 +967,22 @@ def main():
             )
 
             if can_parallelize:
+                # Snapshot the workspace directory so the background grader
+                # reads a stable copy even after the main thread rebuilds the
+                # workspace for the next task (fixes race condition #365).
+                workspace_path = result.get("workspace", "")
+                if workspace_path and os.path.isdir(workspace_path):
+                    snapshot_dir = tempfile.mkdtemp(prefix="pinchbench_grade_")
+                    shutil.copytree(workspace_path, os.path.join(snapshot_dir, "ws"), dirs_exist_ok=True)
+                    snapshot_workspace = os.path.join(snapshot_dir, "ws")
+                    # Create a shallow copy of execution_result with the snapshot path
+                    grade_result_copy = dict(result)
+                    grade_result_copy["workspace"] = snapshot_workspace
+                    grade_kwargs["execution_result"] = grade_result_copy
+                    pending_grade_snapshot_dir = snapshot_dir
+                else:
+                    pending_grade_snapshot_dir = None
+
                 # Submit grading to background thread
                 pending_grade_future = judge_executor.submit(grade_task, **grade_kwargs)
                 pending_grade_task = task
