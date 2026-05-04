@@ -4,7 +4,7 @@
 
 [![Leaderboard](https://img.shields.io/badge/leaderboard-pinchbench.com-blue)](https://pinchbench.com)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-<!-- task-count-badge -->![Tasks](https://img.shields.io/badge/tasks-53-orange)<!-- /task-count-badge -->
+<!-- task-count-badge -->![Tasks](https://img.shields.io/badge/tasks-123-orange)<!-- /task-count-badge -->
 
 > **Note:** This repository contains the benchmark skill/tasks. It is NOT the source of official leaderboard results. To add models to the official results, modify [pinchbench/scripts/default-models.yml](https://github.com/pinchbench/scripts/blob/main/default-models.yml).
 
@@ -47,7 +47,7 @@ cd skill
 
 ## What Gets Tested
 
-<!-- task-count-text -->PinchBench includes 53 tasks across real-world categories:<!-- /task-count-text -->
+<!-- task-count-text -->PinchBench includes 123 tasks across real-world categories:<!-- /task-count-text -->
 
 | Category         | Tasks                                   | What's tested                            |
 | ---------------- | --------------------------------------- | ---------------------------------------- |
