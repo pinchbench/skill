@@ -310,6 +310,16 @@ def _parse_args() -> argparse.Namespace:
         default=-0.5,
         help="Slope (%%/run) below which regression is flagged (default: -0.5)",
     )
+    parser.add_argument(
+        "--reasoning",
+        type=str,
+        default=None,
+        metavar="LEVEL",
+        help=(
+            "Enable reasoning/thinking mode for supported models (e.g., 'low', 'medium', 'high'). "
+            "Passed to the model provider as the reasoning parameter."
+        ),
+    )
     args = parser.parse_args()
 
     # Validate --trend-window
@@ -819,6 +829,7 @@ def main():
         agent_workspace,
         base_url=args.base_url,
         api_key=args.api_key,
+        reasoning=args.reasoning,
     )
     cleanup_agent_sessions(agent_id)
 

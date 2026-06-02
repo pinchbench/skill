@@ -201,6 +201,86 @@ def _get_agent_workspace(agent_id: str) -> Path | None:
         return None
 
 
+def _apply_reasoning_to_model(
+    data: dict[str, Any],
+    provider_name: str,
+    model_name: str,
+    reasoning: str,
+) -> None:
+    """Set reasoning parameter on a specific model entry in models.json data.
+
+    Searches through providers and models to find the matching model entry
+    and updates its reasoning field.
+    """
+    # models.json may have either { "providers": { ... } } or
+    # { "models": { "providers": { ... } } } depending on version.
+    providers = data.get("providers") or data.get("models", {}).get("providers", {})
+    provider = providers.get(provider_name)
+    if not provider:
+        return
+
+    models = provider.get("models", [])
+    for model_entry in models:
+        if model_entry.get("id") == model_name or model_entry.get("id") == f"{provider_name}/{model_name}":
+            model_entry["reasoning"] = reasoning
+            return
+
+    # Model not found in provider's model list — add it with reasoning enabled
+    models.append(
+        {
+            "id": model_name,
+            "name": model_name,
+            "reasoning": reasoning,
+            "input": ["text"],
+            "contextWindow": 128000,
+            "maxTokens": 8192,
+        }
+    )
+    provider["models"] = models
+
+
+def _set_agent_thinking_default(agent_id: str, thinking_level: str) -> None:
+    """Set thinkingDefault for an agent in OpenClaw's global config.
+
+    OpenClaw stores agent config in ~/.openclaw/openclaw.json under agents.list.
+    Each agent entry can have a thinkingDefault field that controls the
+    model's reasoning/thinking level for that agent's sessions.
+    """
+    config_path = Path.home() / ".openclaw" / "openclaw.json"
+    if not config_path.exists():
+        logger.warning("OpenClaw config not found at %s, skipping thinkingDefault", config_path)
+        return
+
+    try:
+        raw = config_path.read_text("utf-8-sig")
+        config = json.loads(raw)
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.warning("Failed to read OpenClaw config: %s", exc)
+        return
+
+    agents = config.setdefault("agents", {})
+    agent_list = agents.setdefault("list", [])
+
+    # Find or create agent entry
+    agent_entry = None
+    for entry in agent_list:
+        if isinstance(entry, dict) and entry.get("id") == agent_id:
+            agent_entry = entry
+            break
+
+    if agent_entry is None:
+        agent_entry = {"id": agent_id}
+        agent_list.append(agent_entry)
+
+    agent_entry["thinkingDefault"] = thinking_level
+
+    try:
+        config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False), "utf-8")
+        logger.info("Set thinkingDefault='%s' for agent %s", thinking_level, agent_id)
+    except OSError as exc:
+        logger.warning("Failed to write OpenClaw config: %s", exc)
+
+
 def ensure_agent_exists(
     agent_id: str,
     model_id: str,
@@ -208,6 +288,7 @@ def ensure_agent_exists(
     *,
     base_url: str | None = None,
     api_key: str | None = None,
+    reasoning: str | None = None,
 ) -> bool:
     """Ensure the OpenClaw agent exists with the correct workspace.
 
@@ -218,6 +299,9 @@ def ensure_agent_exists(
     configured in the agent's ``models.json`` instead of relying on
     OpenRouter.  *api_key* defaults to ``${OPENAI_API_KEY}`` (resolved by
     OpenClaw at runtime) if not given.
+
+    *reasoning* is passed to the model provider (e.g., 'low', 'medium', 'high')
+    for models that support reasoning/thinking parameters.
 
     Returns True if the agent was (re)created.
     """
@@ -321,20 +405,21 @@ def ensure_agent_exists(
         key_ref = api_key if api_key else "${OPENAI_API_KEY}"
         providers = data.setdefault("models", {}).setdefault("providers", {})
         data["models"]["mode"] = "merge"
+        model_entry: dict[str, Any] = {
+            "id": model_id,
+            "name": model_id,
+            "reasoning": False,
+            "input": ["text"],
+            "contextWindow": 200000,
+            "maxTokens": 8192,
+        }
+        if reasoning:
+            model_entry["reasoning"] = reasoning
         providers["custom"] = {
             "baseUrl": base_url,
             "apiKey": key_ref,
             "api": "openai-completions",
-            "models": [
-                {
-                    "id": model_id,
-                    "name": model_id,
-                    "reasoning": False,
-                    "input": ["text"],
-                    "contextWindow": 200000,
-                    "maxTokens": 8192,
-                }
-            ],
+            "models": [model_entry],
         }
         data["defaultProvider"] = "custom"
         data["defaultModel"] = model_id
@@ -356,15 +441,28 @@ def ensure_agent_exists(
                 data = json.loads(raw)
                 data["defaultProvider"] = provider_name
                 data["defaultModel"] = model_name
+
+                # Apply reasoning parameter to the model entry if specified
+                if reasoning:
+                    _apply_reasoning_to_model(data, provider_name, model_name, reasoning)
+
                 bench_models.write_text(
                     json.dumps(data, indent=2, ensure_ascii=False), "utf-8"
                 )
                 logger.info(
                     "Set bench agent default model to %s / %s", provider_name, model_name
                 )
+                if reasoning:
+                    logger.info(
+                        "Set reasoning='%s' for model %s/%s", reasoning, provider_name, model_name
+                    )
             except Exception as exc:
                 logger.warning("Failed to set default model in bench models.json: %s", exc)
         logger.info("Copied main agent models.json to bench agent %s", agent_id)
+
+    # Set thinkingDefault in OpenClaw's global config if reasoning level specified
+    if reasoning:
+        _set_agent_thinking_default(agent_id, reasoning)
 
     # Delete sessions.json so OpenClaw picks up the new defaultProvider/defaultModel
     # instead of reusing a cached session entry that still points to an old model.
