@@ -65,6 +65,8 @@ categories:
     - task_email_triage
     - task_cron_organizer
     - task_subway_navigation
+    - task_cron_on_exit
+    - task_capability_profile
 
   research:
     - task_stock
@@ -103,6 +105,7 @@ categories:
     - task_browser_automation
     - task_video_transcript_extraction
     - task_iterative_code_refine
+    - task_attach_harness
 
   analysis:
     - task_summary
