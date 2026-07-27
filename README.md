@@ -131,6 +131,10 @@ By default (no `--judge` flag), the LLM judge runs as an OpenClaw agent session.
 
 Required env vars: `OPENROUTER_API_KEY`, `KILO_API_KEY`, `ANTHROPIC_API_KEY`, or `OPENAI_API_KEY` depending on the judge model prefix.
 
+## Related external benchmarks
+
+[ClawBench](https://github.com/TIGER-AI-Lab/ClawBench) is a complementary benchmark for browser and computer-use agents performing real-world tasks across live websites. It is independent of PinchBench and is not integrated or supported by this repository; the link is provided for readers comparing agent-evaluation environments.
+
 ## Contributing Tasks
 
 We welcome new tasks! Check out [`tasks/TASK_TEMPLATE.md`](tasks/TASK_TEMPLATE.md) for the format. Good tasks are:
