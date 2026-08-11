@@ -33,6 +33,8 @@ models:
   #- openrouter/deepseek/deepseek-v3.2
 
   # Minimax
+  - openrouter/minimax/minimax-m3
+  - openrouter/minimax/minimax-m2.7
   - openrouter/minimax/minimax-m2.1
   - openrouter/minimax/minimax-m2.5
 
