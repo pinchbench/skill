@@ -41,9 +41,54 @@ The command may use either `.` or an equivalent current-directory path as its se
 ## Automated Checks
 
 ```python
+def _shell_argv(command: str, platform: str = None, which=None) -> list[str]:
+    import os
+    import shutil
+
+    platform = platform or os.name
+    which = which or shutil.which
+
+    if platform == "nt":
+        shell = which("pwsh") or which("powershell")
+        if not shell:
+            raise RuntimeError("PowerShell is required to grade this task on Windows")
+        return [shell, "-NoProfile", "-NonInteractive", "-Command", command]
+
+    if platform == "posix":
+        shell = which("bash")
+        if not shell:
+            raise RuntimeError("bash is required to grade this task on POSIX")
+        return [shell, "-c", command]
+
+    raise RuntimeError(f"Unsupported grading platform: {platform}")
+
+
+def _normalize_output_path(raw_path: str, root) -> str:
+    import posixpath
+
+    path = raw_path.strip().replace("\\", "/")
+    resolved_root = root.resolve() if hasattr(root, "resolve") else root
+    root_path = str(resolved_root).replace("\\", "/").rstrip("/")
+    windows_root = (
+        len(root_path) >= 3 and root_path[1:3] == ":/"
+    ) or root_path.startswith("//")
+
+    path_matches_root = (
+        path.casefold().startswith(root_path.casefold() + "/")
+        if windows_root
+        else path.startswith(root_path + "/")
+    )
+    if path_matches_root:
+        path = path[len(root_path) + 1 :]
+
+    while path.startswith("./"):
+        path = path[2:]
+
+    return posixpath.normpath(path)
+
+
 def grade(transcript: list, workspace_path: str) -> dict:
     from pathlib import Path
-    import os
     import subprocess
     import tempfile
 
@@ -95,15 +140,13 @@ def grade(transcript: list, workspace_path: str) -> dict:
 
         try:
             result = subprocess.run(
-                command,
+                _shell_argv(command),
                 cwd=root,
-                shell=True,
-                executable="/bin/bash",
                 capture_output=True,
                 text=True,
                 timeout=15,
             )
-        except Exception:
+        except subprocess.TimeoutExpired:
             return scores
 
         if result.returncode == 0:
@@ -116,9 +159,7 @@ def grade(transcript: list, workspace_path: str) -> dict:
             stripped = line.strip()
             if not stripped:
                 continue
-            if stripped.startswith("./"):
-                stripped = stripped[2:]
-            output_lines.append(stripped)
+            output_lines.append(_normalize_output_path(stripped, root))
 
         actual = sorted(set(output_lines))
         expected = sorted([
