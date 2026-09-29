@@ -15,6 +15,24 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+# Opening fence: up to 3 spaces, then ``` or ~~~, then an optional info string.
+# A closing fence is the same marker with no info string.
+_FENCE_OPEN_RE = re.compile(r"^ {0,3}(?P<mark>`{3,}|~{3,})(?P<info>.*)$")
+
+
+def _opening_fence_mark(line: str) -> Optional[str]:
+    """Return the fence marker when ``line`` opens a code block."""
+    match = _FENCE_OPEN_RE.match(line)
+    if not match:
+        return None
+    return match.group("mark")
+
+
+def _is_closing_fence(line: str, opener: str) -> bool:
+    """True when ``line`` closes a fence opened with ``opener``."""
+    char = opener[0]
+    return re.match(rf"^ {{0,3}}{re.escape(char)}{{{len(opener)},}}\s*$", line) is not None
+
 
 class Task:
     """Represents a single benchmark task."""
@@ -238,12 +256,32 @@ class TaskLoader:
         return task
 
     def _parse_sections(self, body: str) -> Dict[str, str]:
-        """Parse markdown sections from task body."""
+        """Parse markdown sections from task body.
+
+        ``##`` lines inside a fenced code block stay in the current section.
+        Prompts often include a sample document, and those inner headings are
+        part of the text sent to the agent.
+        """
         sections = {}
         current_section = None
         current_content = []
+        open_fence: Optional[str] = None
 
         for line in body.split("\n"):
+            if open_fence is not None:
+                if _is_closing_fence(line, open_fence):
+                    open_fence = None
+                if current_section:
+                    current_content.append(line)
+                continue
+
+            fence_mark = _opening_fence_mark(line)
+            if fence_mark is not None:
+                open_fence = fence_mark
+                if current_section:
+                    current_content.append(line)
+                continue
+
             # Check for section headers (## Header)
             header_match = re.match(r"^##\s+(.+)$", line)
             if header_match:
