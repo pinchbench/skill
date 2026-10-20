@@ -1,8 +1,8 @@
 # Default models for scheduled benchmark runs
 # All models routed through OpenRouter for consistent API access
 #
-# This list includes all models currently on the PinchBench leaderboard
-# plus new models to benchmark.
+# This list selects models for new benchmark runs.
+# Historical models can still be selected explicitly with --model.
 
 models:
   # Anthropic
@@ -32,9 +32,9 @@ models:
   - openrouter/deepseek/deepseek-chat
   #- openrouter/deepseek/deepseek-v3.2
 
-  # Minimax
-  - openrouter/minimax/minimax-m2.1
-  - openrouter/minimax/minimax-m2.5
+  # MiniMax (legacy models remain available through an explicit --model)
+  - openrouter/minimax/minimax-m3.1-flash:free
+  - openrouter/minimax/minimax-m3
 
   # Qwen
   - openrouter/qwen/qwen3-coder-next

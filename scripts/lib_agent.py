@@ -36,6 +36,73 @@ JUDGE_MAX_MSG_CHARS = int(os.environ.get("PINCHBENCH_JUDGE_MAX_MSG_CHARS", "3000
 # Valid thinking levels for OpenClaw reasoning depth
 VALID_THINKING_LEVELS = ("off", "minimal", "low", "medium", "high", "xhigh", "adaptive")
 
+_MINIMAX_OPENAI_BASE_URLS = {
+    "https://api.minimax.io/v1",
+    "https://api.minimax.cn/v1",
+    "https://api.minimaxi.com/v1",
+}
+
+_MINIMAX_MODEL_METADATA: dict[str, dict[str, Any]] = {
+    "MiniMax-M3.1-Flash": {
+        "reasoning": True,
+        "input": ["text", "image", "video"],
+        "contextWindow": 1_000_000,
+        "maxTokens": 524_288,
+        "cost": {
+            "input": 0.15,
+            "output": 0.6,
+            "cacheRead": 0.015,
+        },
+    },
+    "MiniMax-M3": {
+        "reasoning": True,
+        "input": ["text", "image", "video"],
+        "contextWindow": 1_000_000,
+        # Standard <=512k input estimate; this schema cannot express tiered prices.
+        # Longer inputs cost twice as much; priority adds a further 1.5x.
+        "cost": {
+            "input": 0.3,
+            "output": 1.2,
+            "cacheRead": 0.06,
+        },
+    },
+    "MiniMax-M2.7": {
+        "reasoning": True,
+        "input": ["text"],
+        "contextWindow": 204_800,
+        "cost": {
+            "input": 0.3,
+            "output": 1.2,
+            "cacheRead": 0.06,
+            "cacheWrite": 0.375,
+        },
+    },
+}
+
+
+def _custom_model_definition(model_id: str, base_url: str) -> dict[str, Any]:
+    definition: dict[str, Any] = {
+        "id": model_id,
+        "name": model_id,
+        "reasoning": False,
+        "input": ["text"],
+        "contextWindow": 200_000,
+        "maxTokens": 8192,
+    }
+
+    if base_url.rstrip("/") in _MINIMAX_OPENAI_BASE_URLS:
+        metadata = _MINIMAX_MODEL_METADATA.get(model_id)
+        if metadata:
+            definition.update(metadata)
+            if (
+                model_id in ("MiniMax-M3.1-Flash", "MiniMax-M3")
+                and base_url.rstrip("/") != "https://api.minimax.io/v1"
+            ):
+                # International USD prices do not describe regional billing.
+                definition.pop("cost", None)
+
+    return definition
+
 
 def _coerce_subprocess_output(value: Any) -> str:
     if value is None:
@@ -325,16 +392,7 @@ def ensure_agent_exists(
             "baseUrl": base_url,
             "apiKey": key_ref,
             "api": "openai-completions",
-            "models": [
-                {
-                    "id": model_id,
-                    "name": model_id,
-                    "reasoning": False,
-                    "input": ["text"],
-                    "contextWindow": 200000,
-                    "maxTokens": 8192,
-                }
-            ],
+            "models": [_custom_model_definition(model_id, base_url)],
         }
         data["defaultProvider"] = "custom"
         data["defaultModel"] = model_id

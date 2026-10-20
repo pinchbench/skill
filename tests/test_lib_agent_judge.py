@@ -98,5 +98,26 @@ class KiloJudgeTests(unittest.TestCase):
         )
 
 
+class MiniMaxJudgeTests(unittest.TestCase):
+    def test_openrouter_serializes_current_and_explicit_legacy_models(self) -> None:
+        for model in (
+            "minimax/minimax-m3.1-flash:free", "minimax/minimax-m3",
+            "minimax/minimax-m2.7", "minimax/minimax-m2.5", "minimax/minimax-m2.1",
+        ):
+            with self.subTest(model=model), patch.dict(
+                os.environ, {"OPENROUTER_API_KEY": "test-key"}, clear=True
+            ), patch("lib_agent.request.urlopen", return_value=_FakeResponse()) as urlopen:
+                result = call_judge_api(prompt="grade this", model=f"openrouter/{model}")
+            self.assertEqual(result["status"], "success")
+            req = urlopen.call_args.args[0]
+            self.assertEqual(req.full_url, "https://openrouter.ai/api/v1/chat/completions")
+            self.assertEqual(req.get_method(), "POST")
+            payload = json.loads(req.data)
+            self.assertEqual(payload["model"], model)
+            self.assertEqual(payload["messages"][1], {"role": "user", "content": "grade this"})
+            for field in ("thinking", "reasoning_effort", "service_tier", "reasoning_split"):
+                self.assertNotIn(field, payload)
+
+
 if __name__ == "__main__":
     unittest.main()
